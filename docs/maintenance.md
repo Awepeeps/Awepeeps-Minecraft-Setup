@@ -36,6 +36,14 @@ transitions, for the daily schedule:
   the backup schedule and expire the test wipe; they do not perform a world
   cutover, restore, or season launch automatically.
 
+During a disposable-world rehearsal, run the installed backup and reset services
+with explicit authorization to wipe that sandbox. Verify a fresh world seed,
+preserved whitelist/operators and plugin settings, reset POIs, and post-start
+game rules. Verify the pre-wipe archive separately in an isolated restore.
+Check BlueMap output as well: an idle or updated status alone does not prove the
+previous world's terrain tiles were removed. The reset should request a purge
+for every configured map, check its acknowledgment, and let BlueMap rebuild.
+
 The exact date, server version, and automation settings belong in private
 deployment configuration. Do not copy instance-specific values into this guide.
 
