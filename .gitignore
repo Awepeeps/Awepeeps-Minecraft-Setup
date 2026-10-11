@@ -1,0 +1,37 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.local.*
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+
+# Runtime data and generated output
+data/
+world*/
+backups/
+logs/
+crash-reports/
+cache/
+libraries/
+versions/
+target/
+build/
+*.jar
+*.zip
+*.tar
+*.tar.gz
+*.log
+server.properties
+whitelist.json
+ops.json
+banned-players.json
+banned-ips.json
+
+# Local tools and operating system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
