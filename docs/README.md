@@ -5,3 +5,5 @@ examples and placeholders instead of live deployment details.
 
 - [Agent-assisted Minecraft testing](testing.md): public workflow, safety gates,
   verified compatibility scope, acceptance checklist, and teardown steps.
+- [Maintenance](maintenance.md): portable backup, reset, restore-verification,
+  retention, and map-maintenance policy.

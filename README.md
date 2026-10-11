@@ -30,6 +30,8 @@ this repository.
 See [the testing guide](docs/testing.md) for the portable workflow and safety
 checks used for agent-assisted Minecraft testing. It documents the public setup
 scaffold and its relationship to the private deployment and Navigator repositories.
+See the [maintenance guide](docs/maintenance.md) for portable backup, daily
+reset, restore-verification, and map-maintenance policy.
 
 - **Awepeeps-Minecraft-Setup (this repository):** public, portable templates,
   documentation, and reusable setup materials.
