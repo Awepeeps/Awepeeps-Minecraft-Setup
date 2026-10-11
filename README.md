@@ -25,6 +25,19 @@ this repository.
 | `docs/` | Setup and operations guides |
 | `seasons/` | Sanitized season templates and release notes |
 
+## Testing and repository boundaries
+
+See [the testing guide](docs/testing.md) for the portable workflow and safety
+checks used for agent-assisted Minecraft testing. It documents the public setup
+scaffold and its relationship to the private deployment and Navigator repositories.
+
+- **Awepeeps-Minecraft-Setup (this repository):** public, portable templates,
+  documentation, and reusable setup materials.
+- **Private deployment repository:** instance-specific pins, live configuration,
+  and the guarded Mineflayer test harness. Do not publish these materials here.
+- **Awepeeps-Navigator:** public source code and tests for custom compass
+  navigation, released separately.
+
 ## Before importing implementation
 
 Import selected files into this fresh history after reviewing them. Do not merge
