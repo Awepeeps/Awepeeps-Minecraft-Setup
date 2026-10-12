@@ -114,8 +114,8 @@ export script
 export tmp
 failures=0
 check() { local name="$1"; shift; if "$@"; then printf 'ok - %s\n' "$name"; else printf 'not ok - %s\n' "$name"; cat "$tmp/last-error" 2>/dev/null || true; failures=$((failures+1)); fi; }
-run() { : > "$CALLS"; env "$@" "$script" >/dev/null 2>"$tmp/last-error"; }
-run_default_prebackup() { : > "$CALLS"; env -u PREWIPE_BACKUP "$script" >/dev/null 2>"$tmp/last-error"; }
+run() { : > "$CALLS"; env "$@" bash "$script" >/dev/null 2>"$tmp/last-error"; }
+run_default_prebackup() { : > "$CALLS"; env -u PREWIPE_BACKUP bash "$script" >/dev/null 2>"$tmp/last-error"; }
 has() { grep -Fq -- "$1" "$CALLS"; }
 export -f run run_default_prebackup has
 check expiry_no_docker bash -c 'run RESET_UNTIL=2026-01-01 && [[ ! -s "$CALLS" ]]'
