@@ -10,6 +10,7 @@ id_ed25519*
 
 # Runtime data and generated output
 data/
+.gradle/
 world*/
 backups/
 logs/
@@ -24,6 +25,7 @@ build/
 *.tar
 *.tar.gz
 *.log
+!plugins/AwepeepsTestKit/gradle/wrapper/gradle-wrapper.jar
 server.properties
 whitelist.json
 ops.json

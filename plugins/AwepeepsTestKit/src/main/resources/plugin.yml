@@ -1,0 +1,6 @@
+name: AwepeepsTestKit
+version: '${version}'
+main: com.awepeeps.testkit.AwepeepsTestKit
+api-version: '1.21'
+description: Places one expiring, one-time starter chest in disposable test worlds.
+authors: [Awepeeps]

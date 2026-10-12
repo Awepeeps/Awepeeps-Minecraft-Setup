@@ -1,0 +1,6 @@
+# Fail closed. Enable only in a disposable test-server configuration with a
+# real expiry date and timezone. Production season configs must keep this off.
+test-supplies:
+  enabled: false
+  expires-on: ""
+  timezone: ""
