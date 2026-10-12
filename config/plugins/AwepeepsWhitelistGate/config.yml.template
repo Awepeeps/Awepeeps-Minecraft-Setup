@@ -1,0 +1,22 @@
+# Awepeeps Whitelist Gate — configuration.
+# Destination on the server: <instance-data>/plugins/AwepeepsWhitelistGate/config.yml
+#
+# The plugin notifies the owner on Discord, via a webhook, when a
+# non-whitelisted player tries to join. The owner approves a player with a
+# console command. The webhook URL is a secret and is supplied through the
+# environment variable WLGATE_DISCORD_WEBHOOK_URL, never in this file, in Git,
+# or in a log.
+#
+# TODO: the plugin is new and its config key names are not confirmed. Confirm
+# them against the plugin's own documentation/repository before enabling, and
+# merge the confirmed keys into the generated file instead of replacing it.
+# The security-relevant intent is:
+#   - enabled: true only after the webhook environment variable is set
+#   - one Discord webhook URL, read from WLGATE_DISCORD_WEBHOOK_URL
+#   - notify once per join attempt, without leaking the URL into logs
+#   - approval is a console-only command; players cannot approve themselves
+enabled: false
+# The plugin must never print or persist the webhook URL.
+webhook-env-var: WLGATE_DISCORD_WEBHOOK_URL
+# TODO: confirm the approval command and any cooldown/rate-limit keys.
+approval: console-only

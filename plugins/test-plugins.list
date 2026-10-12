@@ -1,0 +1,7 @@
+# TEST-ONLY plugin pins. Do not copy this file into a live season.
+# Format: name|source|version|url|sha256
+#
+# Awepeeps Spawn Kit places a starter house, supply chest, spawn pad and
+# BlueMap spawn marker into disposable test worlds. Build it with
+# automation/build-spawn-kit.sh and install only on a test server.
+AwepeepsSpawnKit|Awepeeps-SpawnKit source commit TODO_COMMIT|1.1.3|https://github.com/Awepeeps/Awepeeps-SpawnKit/tree/TODO_COMMIT|TODO_64_HEX_SHA256

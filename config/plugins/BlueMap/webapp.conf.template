@@ -1,0 +1,22 @@
+# BlueMap webapp.conf — template values to merge.
+# Destination on the server: <instance-data>/plugins/BlueMap/webapp.conf
+#
+# BlueMap writes the full file on first boot. Stop the server, merge the values
+# below into the generated file, and start again. The 3D viewer's hires/lowres
+# sliders only affect browser draw/detail distance; they do not restrict explored
+# terrain or Minecraft chunk delivery.
+#
+# The values below are the ones the reference instance uses. TODO: confirm the
+# exact key names and nesting against your BlueMap version's generated
+# webapp.conf or the official reference
+# (https://bluemap.bluecolored.de/wiki/configs/Webapp.html).
+#
+#   webroot:            bluemap/web
+#   logfile:            <instance-data>/plugins/BlueMap/webserver.log
+#   port:               8100
+#   max-zoom-distance:  512              # matches player view-distance 10
+#   hires-slider:       min 0, default 160, max 160
+#   lowres-slider:      min 0, default 160, max 160
+#
+# TODO: BlueMap's generated file may use placeholders (${webroot}, ${logfile}).
+# Resolve them to concrete paths so the webserver does not fail to start.

@@ -1,0 +1,41 @@
+# MCSManager panel — web + daemon.
+# Runs on the Linux host that also runs Docker (on WSL2 Ubuntu, inside the
+# distro, NOT Docker Desktop). Docs: https://docs.mcsmanager.com/
+#
+# Ports (from .env, with safe defaults): 23333 web UI, 24444 daemon.
+# Bind these to the LAN/VPN only; never publish them to the internet.
+# The daemon gets docker.sock so Minecraft instances can be Docker-isolated.
+#
+# TODO: pin both images by digest for reproducible rebuilds.
+#   docker pull githubyumao/mcsmanager-web:latest
+#   docker inspect --format '{{index .RepoDigests 0}}' githubyumao/mcsmanager-web:latest
+
+services:
+  web:
+    image: githubyumao/mcsmanager-web:latest
+    container_name: mcsm-web
+    restart: unless-stopped
+    ports:
+      - "${MCSM_WEB_PORT:-23333}:23333"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/web/data:/opt/mcsmanager/web/data
+      - ./data/web/logs:/opt/mcsmanager/web/logs
+
+  daemon:
+    image: githubyumao/mcsmanager-daemon:latest
+    container_name: mcsm-daemon
+    restart: unless-stopped
+    ports:
+      - "${MCSM_DAEMON_PORT:-24444}:24444"
+    environment:
+      # Must be an absolute path on the host and identical to the bind source
+      # below. MCSManager passes instance data paths to the host Docker daemon,
+      # so a relative path is invalid.
+      - MCSM_DOCKER_WORKSPACE_PATH=${MCSM_DOCKER_WORKSPACE_PATH:-/srv/minecraft/instances}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/daemon/data:/opt/mcsmanager/daemon/data
+      - ./data/daemon/logs:/opt/mcsmanager/daemon/logs
+      - ${MCSM_DOCKER_WORKSPACE_PATH:-/srv/minecraft/instances}:/opt/mcsmanager/daemon/data/InstanceData
+      - /var/run/docker.sock:/var/run/docker.sock

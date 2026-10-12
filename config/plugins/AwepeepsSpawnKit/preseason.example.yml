@@ -1,0 +1,61 @@
+# Awepeeps Spawn Kit — TEST-ONLY example (a disposable test world may use this).
+# Destination on the server: <instance-data>/plugins/AwepeepsSpawnKit/config.yml
+#
+# !!! DO NOT USE ON A LIVE SEASON !!!
+# This enables a spawn marker, a compact starter house, and one supply chest.
+# It is deliberately not part of plugins/plugins.list. Dates are inclusive in
+# the configured timezone; replace the placeholder dates before use and keep
+# them inside the disposable test window. Never infer permission to erase a live
+# world from this file.
+spawn-kit:
+  enabled: true
+  starts-on: "TODO-YYYY-MM-DD"
+  expires-on: "TODO-YYYY-MM-DD"
+  timezone: "TODO/Timezone"
+  # The guarded reset must temporarily load at least four blocks more than this
+  # search radius (SPAWN_KIT_LOAD_RADIUS). See docs/world-reset.md.
+  search-radius: 32
+  spawn-marker:
+    enabled: true
+    name: "World Spawn"
+  house:
+    enabled: true
+    chest:
+      enabled: true
+      items:
+        - material: COMPASS
+          amount: 16
+        - material: BRUSH
+          amount: 1
+        - material: OAK_LOG
+          amount: 64
+        - material: OAK_PLANKS
+          amount: 64
+        - material: COBBLESTONE
+          amount: 64
+        - material: CRAFTING_TABLE
+          amount: 1
+        - material: STICK
+          amount: 64
+        - material: TORCH
+          amount: 64
+        - material: IRON_INGOT
+          amount: 64
+        - material: WHITE_BANNER
+          amount: 8
+        - material: RED_BANNER
+          amount: 8
+        - material: ANVIL
+          amount: 1
+        - material: DIAMOND_SWORD
+          amount: 1
+        - material: DIAMOND_PICKAXE
+          amount: 1
+        - material: DIAMOND_AXE
+          amount: 1
+        - material: DIAMOND_SHOVEL
+          amount: 1
+        - material: DIAMOND_HOE
+          amount: 1
+        - material: COOKED_BEEF
+          amount: 99

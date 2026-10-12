@@ -1,0 +1,56 @@
+# server.properties template.
+# Destination on the server: <instance-data>/server.properties
+#
+# The allowlist is the access gate for the whole server. Keep it locked at all
+# times. If the file already exists it contains the instance RCON secret, so
+# merge these keys instead of replacing the whole file.
+#
+# NOTE: the allowlist key has been renamed across Minecraft versions
+# (white-list / allow-list). Verify the correct key on the Paper version in use.
+# enforce-whitelist is the key that actually locks the door for future joins.
+# The itzg/minecraft-server image sets the matching container env (see below);
+# set both there so a first-boot file is already locked.
+
+# --- Access (locked by policy: whitelist-only) -------------------------------
+white-list=true
+enforce-whitelist=true
+# Java accounts must authenticate with Mojang. Keep true; Bedrock players are
+# handled by Floodgate, not by turning this off.
+online-mode=true
+# Bedrock players join through Geyser, which does not carry a signed Java chat
+# profile. enforce-secure-profile=false lets them chat and join reliably.
+# Trade-off: this relaxes signed-chat enforcement for Java clients too. It does
+# not weaken authentication or the whitelist. Revisit if Geyser adds support.
+enforce-secure-profile=false
+
+# --- World / season defaults -------------------------------------------------
+level-name=world
+# Empty = fresh random seed. A guarded test reset rotates this; set a value for
+# a reproducible live world. Never commit a real seed.
+level-seed=
+gamemode=survival
+difficulty=normal
+pvp=true
+spawn-protection=2
+view-distance=10
+max-players=20
+
+# --- Network -----------------------------------------------------------------
+server-port=25565
+# Leave server-ip unset so the server binds all interfaces inside the container.
+# Set a neutral MOTD; do not include a hostname, IP, or personal text.
+motd=<SERVER MOTD>
+
+# --- RCON (required by the backup script) ------------------------------------
+# The itzg image can enable RCON and generate its password from container env
+# (ENABLE_RCON, RCON_PASSWORD). Prefer that over storing a password in this
+# file. If you set it here, keep the value out of Git and out of backups you
+# share: rcon.password is a secret.
+enable-rcon=true
+rcon.password=CHANGE_ME
+# --- Misc --------------------------------------------------------------------
+enable-command-block=false
+function-permission-level=2
+
+# Ops: none by policy. Add operators deliberately, one at a time; a whitelisted
+# friend is not an operator.

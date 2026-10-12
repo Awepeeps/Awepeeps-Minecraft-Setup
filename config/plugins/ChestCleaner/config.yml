@@ -1,0 +1,45 @@
+# Awepeeps ChestCleaner (maintained fork of ChestCleaner).
+# Destination on the server: <instance-data>/plugins/ChestCleaner/config.yml
+# See docs/updating-plugins.md for the source pin, build, permissions and
+# interactions.
+#
+# Suppress the upstream update check and its failure stack trace.
+updateMessage: false
+#
+# IMPORTANT: the serialized `item` block below is version-sensitive (the `v:`
+# data-version changes with every Minecraft release). The reliable way to set the
+# cleaning item is in-game:
+#   hold a brush -> /cleaningitem set
+# Treat this file as a fallback/backup, and prefer the runtime command.
+#
+# Server-wide defaults are set with /sortingadmin (NOT /sortingconfig, which is
+# player-scope):
+#   /sortingadmin clickSort false
+#   /sortingadmin autosort false
+#   /sortingadmin sortingSound active true
+#   /sortingadmin chatNotification true
+#   /sortingadmin refill false
+
+default:
+  clicksort: false
+  autosort: false
+
+cleaningItem:
+  active: true
+  # brush takes durability damage on use
+  durability: true
+  # false = opening with the brush only opens the container; sneak-click sorts
+  openEvent: false
+  item:
+    ==: org.bukkit.inventory.ItemStack
+    v: "" # <- set by /cleaningitem set at runtime; do not hand-edit
+    type: BRUSH
+
+blacklist:
+  stacking:
+    - air
+    - bed
+  inventory:
+    - furnace
+  autorefill:
+    - stone

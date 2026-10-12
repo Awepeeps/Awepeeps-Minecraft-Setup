@@ -1,0 +1,8 @@
+# Curated world seeds for a disposable test world (one literal integer per line).
+# The guarded reset rotates through this list; blank lines and '#' comments are
+# ignored. An empty or missing file means a fresh random seed each run.
+#
+# Add notable seeds here so the same world can be replayed by anyone later.
+#
+# 8675309
+# 123456789
