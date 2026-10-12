@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+config/sources/*.env
 *.local.*
 *.pem
 *.key
@@ -20,19 +21,25 @@ libraries/
 versions/
 target/
 build/
+artifacts/
 *.jar
 *.zip
 *.tar
 *.tar.gz
 *.log
-!plugins/AwepeepsTestKit/gradle/wrapper/gradle-wrapper.jar
 server.properties
 whitelist.json
 ops.json
 banned-players.json
 banned-ips.json
 
+# Lifecycle state and generated reports
+.reset-state/
+maintenance-status.txt
+
 # Local tools and operating system files
+__pycache__/
+*.pyc
 .idea/
 .vscode/
 .DS_Store

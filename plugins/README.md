@@ -1,11 +1,55 @@
-# Custom plugins
+# Plugins
 
-Custom plugins are maintained in their own repositories, with exact source and
-artifact pins recorded by each consuming deployment. Generated binaries and
-runtime plugin data are excluded.
+The plugin set for the server. Pins, URLs and SHA-256 digests live in
+`plugins.list` (live-safe) and `test-plugins.list` (test-only). The group's own
+plugins are maintained in their own public repositories under the `Awepeeps` org;
+this repo records the pins and how to build and verify them, and never contains
+plugin runtime data or built binaries.
 
-- [Awepeeps BlueMap Compass](https://github.com/Awepeeps/Awepeeps-BlueMap-Compass)
-  provides custom compass navigation.
-- [Awepeeps Spawn Kit](https://github.com/Awepeeps/Awepeeps-SpawnKit) provides
-  generic, server-configured one-time kit placement with safe spawn-area
-  discovery and an optional date window.
+## Third-party plugins
+
+| Plugin | Purpose | Test-only |
+|---|---|---|
+| [ViaVersion](https://github.com/ViaVersion/ViaVersion) | Lets newer Java clients join an older server. | No |
+| [ViaBackwards](https://github.com/ViaVersion/ViaBackwards) | Lets older Java clients (including Geyser's emulation) join a newer server. Keep matching ViaVersion. | No |
+| [LuckPerms](https://luckperms.net/) | Permissions. Grants the minimal permission instead of opping friends. | No |
+| [BlueMap](https://bluemap.bluecolored.de/) | Web map. | No |
+| [Geyser](https://geysermc.org/) | Translates Bedrock clients to Java. Check for a stable release that supports your Paper version. | No |
+| [Floodgate](https://geysermc.org/) | Lets Bedrock players in without a Java account. | No |
+
+## Awepeeps plugins
+
+| Plugin | Repository | Purpose | Test-only |
+|---|---|---|---|
+| Awepeeps ChestCleaner | [Awepeeps-ChestCleaner](https://github.com/Awepeeps/Awepeeps-ChestCleaner) | Maintained fork of ChestCleaner: brush-driven container and inventory sorting with server-set defaults. | No |
+| Awepeeps BlueMap Compass | [Awepeeps-BlueMap-Compass](https://github.com/Awepeeps/Awepeeps-BlueMap-Compass) | Waypoints/compass integration with BlueMap (lodestone/banner markers, no teleport). | No |
+| Awepeeps Spawn Kit | [Awepeeps-SpawnKit](https://github.com/Awepeeps/Awepeeps-SpawnKit) | Starter house + supply chest, a protected spawn pad, and a BlueMap spawn marker. | **Yes — test only** |
+| Awepeeps Whitelist Gate | private, in progress | Notifies the owner on Discord when a non-whitelisted player tries to join; the owner approves by console command. Webhook URL comes from the `WLGATE_DISCORD_WEBHOOK_URL` environment variable. | No (private; install manually) |
+
+Reference versions on the live set: BlueMap Compass `1.4.1-awepeeps.8`,
+ChestCleaner `2.4.5-awepeeps.1`. Spawn Kit's current reference pin is `1.1.3`
+with a `1.2.0` redesign in progress upstream, and it is never added to the live
+set. No plugin version is self-updating: the manifest pins an exact version (or
+commit) and the jar digest.
+
+**Retired:** the older `Navigator` plugin is no longer current. Its roles were
+split into Awepeeps-SpawnKit (spawn features) and Awepeeps-BlueMap-Compass
+(navigation/waypoints). Do not pin or install it.
+
+## How the group's own plugins are released and pinned
+
+1. The plugin is developed, tested and merged in its own public repo (or the
+   private Whitelist-Gate repo). Each release notes the merged commit and version.
+2. The consuming server pins the **full 40-character commit** and the **version
+   string** in `config/sources/<plugin>.env` (see the `.env.example` files), and
+   pins the **SHA-256 of the built jar** in `plugins/plugins.list`.
+3. `automation/build-<plugin>.sh` clones exactly that commit, runs the source
+   repo's own build, and refuses to emit an artifact whose digest does not match
+   the manifest. Verified jars land in `artifacts/` (gitignored).
+4. The verified jar is copied into the server's `plugins/` directory and the
+   server is restarted from the panel.
+5. Whitelist Gate is private: obtain its reviewed jar from the private repo,
+   record its digest, and install it the same way (the manifest has a commented
+   placeholder).
+
+See [updating plugins](../docs/updating-plugins.md) for the full change flow.

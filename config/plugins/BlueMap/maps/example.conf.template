@@ -1,0 +1,17 @@
+# BlueMap map configuration — template values to merge.
+# Destination on the server: <instance-data>/plugins/BlueMap/maps/<map-id>.conf
+# Example map IDs: world, world_the_nether, world_the_end.
+#
+# BlueMap writes a file per map on first boot. Stop the server, merge the value
+# below into each generated map file, and start again.
+#
+# min-inhabited-time: 30 means a chunk must accumulate about 1.5 seconds (30
+# ticks at 20 ticks/second) of nearby player time before BlueMap renders it.
+# It is a map-render threshold, not an exact record of what a client saw, and it
+# requires a map re-render after any change. Leave any inhabited-time radius at
+# its default. Minecraft view-distance is independent.
+min-inhabited-time: 30
+# TODO: keep the remaining generated map keys (name, world, dimension, storage,
+# and any marker sets) from your BlueMap version. Static marker configuration
+# stays administrator-managed; do not add marker-command addons to the plugin
+# set. See https://bluemap.bluecolored.de/wiki/configs/Maps.html.

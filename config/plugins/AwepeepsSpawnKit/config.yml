@@ -1,0 +1,24 @@
+# Awepeeps Spawn Kit — LIVE-SAFE template (all features disabled).
+# Destination on the server: <instance-data>/plugins/AwepeepsSpawnKit/config.yml
+#
+# Spawn Kit is a TEST-ONLY plugin. It is pinned in plugins/test-plugins.list and
+# must never be copied into the live plugin set. Keep this template disabled on
+# any server that is not a disposable test world. See preseason.example.yml for
+# a clearly marked test-only section, and docs/world-reset.md for the lifecycle.
+#
+# Dates are inclusive in the configured timezone. An empty starts-on/expires-on
+# disables issuance.
+spawn-kit:
+  enabled: false
+  starts-on: ""
+  expires-on: ""
+  timezone: ""
+  search-radius: 16
+  spawn-marker:
+    enabled: false
+    name: "World Spawn"
+  house:
+    enabled: false
+    chest:
+      enabled: false
+      items: []

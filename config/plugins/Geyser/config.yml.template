@@ -1,0 +1,25 @@
+# Geyser-Spigot config — key settings to merge.
+# Destination on the server: <instance-data>/plugins/Geyser-Spigot/config.yml
+#
+# Geyser writes the full file on first boot. Stop the server, merge the values
+# below into the generated file, and start again. Do not hand-write the whole
+# file: future Geyser versions add and rename keys, and a partial file can be
+# rejected or silently defaulted.
+#
+# TODO: confirm every key name and the full generated file against your pinned
+# Geyser version (https://geysermc.org/wiki/geyser/configuration/). The values
+# below are the ones that matter for a whitelist-only, Floodgate-backed server.
+bedrock:
+  # UDP port Bedrock clients connect to. Forward this port at the router.
+  port: 19132
+  # Bind all interfaces inside the container; leave address unset/0.0.0.0.
+  address: 0.0.0.0
+remote:
+  # The Java server Geyser translates to, inside the Docker network.
+  address: 127.0.0.1
+  port: 25565
+  # Floodgate handles Bedrock authentication; do not set auth-type to online.
+  auth-type: floodgate
+# TODO: secure-chat settings. If Bedrock players cannot chat, check Geyser's
+# secure-chat guidance and the server's enforce-secure-profile setting first;
+# see docs/bedrock.md.

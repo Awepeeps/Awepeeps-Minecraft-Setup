@@ -1,0 +1,11 @@
+# Awepeeps BlueMap Compass.
+# Destination on the server: <instance-data>/plugins/AwepeepsBlueMapCompass/config.yml
+#
+# BlueMap is a required dependency. Players sneak-right-click an allowed block
+# with any compass to create/remove a waypoint; there is no teleport and no
+# durability use. Keep the target blocks administrator-controlled so ordinary
+# items cannot create markers anywhere. See docs/bluemap.md.
+marker-targets:
+  - LODESTONE
+  - BANNER
+max-waypoint-distance: 50

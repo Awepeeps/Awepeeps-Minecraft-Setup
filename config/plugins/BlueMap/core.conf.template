@@ -1,0 +1,14 @@
+# BlueMap core.conf — template values to merge.
+# Destination on the server: <instance-data>/plugins/BlueMap/core.conf
+#
+# BlueMap writes the full file on first boot. Stop the server, merge the value
+# below into the generated file, and start again.
+#
+# accept-download: accepting Mojang's EULA confirms a Java Edition license and
+# allows BlueMap to download and use Mojang's client resources for map textures.
+# BlueMap cannot render without those resources. Review the statement BlueMap
+# prints before accepting it.
+accept-download: true
+# TODO: confirm the remaining core.conf keys against your BlueMap version's
+# generated file or the official docs
+# (https://bluemap.bluecolored.de/wiki/configs/Core.html).

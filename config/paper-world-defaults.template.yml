@@ -1,0 +1,15 @@
+# Paper world defaults template.
+# Destination on the server: <instance-data>/config/paper-world-defaults.yml
+#
+# Sleeping percentage is a vanilla world gamerule, not a Paper world-default
+# key. Apply it after world creation with:
+#   execute in minecraft:overworld run gamerule minecraft:players_sleeping_percentage 50
+#   execute in minecraft:the_nether run gamerule minecraft:players_sleeping_percentage 50
+#   execute in minecraft:the_end run gamerule minecraft:players_sleeping_percentage 50
+#
+# Paper writes the real file on first boot. Merge the settings you need into the
+# generated file and keep its generated version key.
+version: 1  # placeholder; keep the generated file's real version key when merging
+world-settings:
+  default:
+    {}  # Add Paper defaults here; do not put gamerules in this section.

@@ -1,0 +1,15 @@
+# Floodgate config — key settings to merge.
+# Destination on the server: <instance-data>/plugins/floodgate/config.yml
+#
+# Floodgate writes the full file on first boot, including the shared key file it
+# uses to trust Geyser. Stop the server, merge the values below into the
+# generated file, and start again. Never publish or commit the generated key
+# file.
+#
+# TODO: confirm every key name and the generated key-file location against your
+# pinned Floodgate version (https://geysermc.org/wiki/floodgate/).
+# Bedrock players have no Java account; Floodgate links them to a Bedrock
+# identity. The username prefix keeps Bedrock names distinct from Java names.
+username-prefix: "."
+# TODO: replace-spaces, key-file, and other keys come from the generated file;
+# keep its values unless you have a reason to change them.

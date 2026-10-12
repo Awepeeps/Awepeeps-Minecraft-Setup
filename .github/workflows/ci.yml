@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: shell, tests, yaml, secrets
+    runs-on: ubuntu-latest
+    steps:
+      # Pinned by full commit SHA (v4.4.0); third-party actions must be pinned.
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Syntax check (bash -n)
+        run: |
+          set -euo pipefail
+          find . -name '*.sh' -not -path './.git/*' -print0 | xargs -0 -n1 bash -n
+          echo "bash -n: OK"
+
+      - name: Install shellcheck (pinned)
+        run: |
+          set -euo pipefail
+          curl -fsSL -o /tmp/shellcheck.tar.xz \
+            https://github.com/koalaman/shellcheck/releases/download/v0.10.0/shellcheck-v0.10.0.linux.x86_64.tar.xz
+          echo "6c881ab0698e4e6ea235245f22832860544f17ba386442fe7e9d629f8cbedf87  /tmp/shellcheck.tar.xz" | sha256sum -c -
+          tar -xJf /tmp/shellcheck.tar.xz -C /tmp
+          echo "/tmp/shellcheck-v0.10.0" >> "$GITHUB_PATH"
+
+      - name: shellcheck
+        run: |
+          set -euo pipefail
+          find . -name '*.sh' -not -path './.git/*' -print0 | xargs -0 shellcheck --severity=warning --external-sources
+          echo "shellcheck: OK"
+
+      - name: Mock test suites
+        run: bash automation/run-tests.sh
+
+      - name: Validate YAML
+        run: |
+          python3 -m pip install --quiet pyyaml
+          python3 - <<'PY'
+          import glob, sys, yaml
+          patterns = ("**/*.yml", "**/*.yaml", "**/*.yml.template")
+          files = set()
+          for pattern in patterns:
+              files.update(glob.glob(pattern, recursive=True))
+          files = sorted(f for f in files if not f.startswith(".git/"))
+          bad = []
+          for path in files:
+              try:
+                  with open(path, encoding="utf-8") as stream:
+                      yaml.safe_load(stream)
+              except yaml.YAMLError as exc:
+                  bad.append((path, exc))
+          for path, exc in bad:
+              print(f"::error file={path}::invalid YAML: {exc}")
+          print(f"validated {len(files)} YAML files")
+          sys.exit(1 if bad else 0)
+          PY
+
+      - name: Secret scan (gitleaks, pinned)
+        run: |
+          set -euo pipefail
+          curl -fsSL -o /tmp/gitleaks.tar.gz \
+            https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  /tmp/gitleaks.tar.gz" | sha256sum -c -
+          mkdir -p /tmp/gitleaks && tar -xzf /tmp/gitleaks.tar.gz -C /tmp/gitleaks
+          /tmp/gitleaks/gitleaks dir . --redact --no-banner
+          echo "gitleaks: no leaks"

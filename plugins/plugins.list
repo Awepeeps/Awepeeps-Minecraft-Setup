@@ -1,0 +1,38 @@
+# Pinned plugins for the live-safe plugin set (Paper).
+# Format: name|source|version|url|sha256
+#
+# Copy this file to the running server's control checkout and fill in every
+# placeholder. automation/install-plugins.sh downloads each entry whose url ends
+# in .jar and whose sha256 is a real 64-character digest, verifies the digest,
+# and copies the jar into the server's plugins/ directory. Entries that still
+# contain a placeholder, or whose url is not a .jar, are skipped with a note.
+#
+# The group's own plugins are built from a pinned source commit with
+# automation/build-*.sh, which verifies the jar against the sha256 recorded here.
+# Pin an exact version (or commit) and the SHA-256 of the exact jar bytes; never
+# follow a moving "latest" download. Do not invent hashes: measure them.
+#
+# Only place live-safe plugins here. Test-only plugins go in test-plugins.list.
+
+# --- Third-party plugins -----------------------------------------------------
+# Verify each release states support for your Paper version before installing.
+ViaVersion|GitHub Releases|5.12.1|TODO_RELEASE_JAR_URL|TODO_64_HEX_SHA256
+ViaBackwards|GitHub Releases|5.12.1|TODO_RELEASE_JAR_URL|TODO_64_HEX_SHA256
+LuckPerms|LuckPerms official download|5.5.87|TODO_RELEASE_JAR_URL|TODO_64_HEX_SHA256
+BlueMap|Modrinth|5.29-paper|TODO_RELEASE_JAR_URL|TODO_64_HEX_SHA256
+# Geyser: the stable 2.11.3 release fails on Paper 26.3. Check for a stable
+# release that supports your Paper version; the reference instance used a 2.12.0
+# preview build. Prefer a stable release when one supports your version.
+Geyser|GeyserMC download (check for a stable release on your Paper version)|TODO_VERSION|TODO_DIRECT_JAR_URL|TODO_64_HEX_SHA256
+Floodgate|GeyserMC download|2.2.5|TODO_DIRECT_JAR_URL|TODO_64_HEX_SHA256
+
+# --- Awepeeps plugins (built from a pinned source commit) --------------------
+# Replace TODO_COMMIT with a full 40-character commit and fill the sha256 by
+# running the matching automation/build-*.sh and reading its verified output.
+ChestCleaner|Awepeeps-ChestCleaner source commit TODO_COMMIT|2.4.5-awepeeps.1|https://github.com/Awepeeps/Awepeeps-ChestCleaner/tree/TODO_COMMIT|TODO_64_HEX_SHA256
+AwepeepsBlueMapCompass|Awepeeps-BlueMap-Compass source commit TODO_COMMIT|1.4.1-awepeeps.8|https://github.com/Awepeeps/Awepeeps-BlueMap-Compass/tree/TODO_COMMIT|TODO_64_HEX_SHA256
+
+# --- Private plugin (not downloadable from this public repo) -----------------
+# Awepeeps-Whitelist-Gate is private and in progress. Obtain the reviewed jar
+# from the private repository, record its SHA-256, and install it manually.
+# AwepeepsWhitelistGate|Awepeeps-Whitelist-Gate (private)|TODO_VERSION|TODO_PRIVATE_JAR_URL|TODO_64_HEX_SHA256
