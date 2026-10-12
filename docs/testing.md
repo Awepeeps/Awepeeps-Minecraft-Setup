@@ -12,14 +12,12 @@ for, any live server.
 - **The deployment repository** is private. It owns instance-specific version
   pins, live configuration, and the guarded test harness. Keep these materials,
   along with deployment paths and operational records, out of this repository.
-- **Awepeeps Test Kit** is portable source in this repository. Its default is
-  disabled; only private disposable-server configuration should enable it, with
-  a bounded expiry. It must not be included in a live-season plugin set.
+- **Awepeeps Spawn Kit** is maintained in its own public plugin repository. It
+  defaults to disabled and empty; the consuming server supplies its own item
+  list and optional inclusive date window. Keep test-only pins and configuration
+  out of live-season plugin sets.
 - **Awepeeps-BlueMap-Compass** is separately maintained public source code for
   custom compass navigation.
-- **KitChests** is a separate third-party plugin, not a dependency of this
-  workflow. Its per-player virtual kit behavior does not itself provide fresh
-  world placement or test/live expiry; see the [test-kit review](../plugins/AwepeepsTestKit/README.md).
 
 Do not copy private deployment documentation or history into this repository.
 When publishing examples, replace account, host, path, and instance identifiers
