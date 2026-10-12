@@ -1,11 +1,9 @@
 # Awepeeps Minecraft Setup
 
-A scaffold for a repeatable Minecraft server blueprint. This repository will
-eventually contain portable configuration templates, automation, custom plugins,
-and operating guides.
+A scaffold for a repeatable Minecraft server blueprint, with portable
+configuration templates, operating guides, and the first setup-owned plugin.
 
-Only scaffolding is included today. Deployment details and server data live outside
-this repository.
+Deployment details and server data live outside this repository.
 
 ## Planned stack
 
@@ -29,7 +27,7 @@ this repository.
 
 See [the testing guide](docs/testing.md) for the portable workflow and safety
 checks used for agent-assisted Minecraft testing. It documents the public setup
-scaffold and its relationship to the private deployment and Navigator repositories.
+scaffold and its relationship to the private deployment and plugin repositories.
 See the [maintenance guide](docs/maintenance.md) for portable backup, daily
 reset, restore-verification, and map-maintenance policy.
 
@@ -37,7 +35,7 @@ reset, restore-verification, and map-maintenance policy.
   documentation, and reusable setup materials.
 - **Private deployment repository:** instance-specific pins, live configuration,
   and the guarded Mineflayer test harness. Do not publish these materials here.
-- **Awepeeps-Navigator:** public source code and tests for custom compass
+- **Awepeeps-BlueMap-Compass:** public source code and tests for custom compass
   navigation, released separately.
 
 ## Before importing implementation
@@ -59,4 +57,5 @@ The org repository is canonical: `Awepeeps/Awepeeps-Minecraft-Setup`.
 Work in `deathpie/Awepeeps-Minecraft-Setup`, using `origin` for the personal fork
 and `upstream` for the org. Submit pull requests against the org's `main` branch.
 The actual running instance is managed in a separate private deployment repository.
-Custom compass navigation will be released separately from `Awepeeps/Awepeeps-Navigator`.
+Custom compass navigation is maintained separately in
+`Awepeeps/Awepeeps-BlueMap-Compass`.

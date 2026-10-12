@@ -5,7 +5,7 @@ deployment. It is policy, not an implementation or a report that a deployment
 has been accepted. The private deployment repository owns schedules, server
 versions, configuration, and automation. Keep those details out of this public
 repository. The public setup guide describes the generic server scaffold;
-deployment operation and the separately maintained Navigator source have their
+deployment operation and the separately maintained BlueMap Compass source have their
 own boundaries.
 
 ## Service priority and lifecycle coordination
@@ -102,11 +102,12 @@ for `min-inhabited-time` and rerender behavior.
 
 ## Shared marker policy
 
-Allow administrator-managed spawn markers and the shared POI layer published by
-Awepeeps-Navigator. Players create a waypoint with an ordinary compass while
-targeting a lodestone; keep `creation.allowed-blocks: [LODESTONE]` and
-`bluemap-markers: true`. In-game item requirements do not hide the shared map layer.
-Vanilla lodestone compass binding alone does not register a waypoint.
+Allow administrator-managed spawn markers and the shared waypoint layer
+published by Awepeeps-BlueMap-Compass. Players sneak-right-click a permitted
+lodestone or banner with a compass to create or remove a waypoint. Keep marker
+targets administrator-controlled; in-game item requirements do not hide the
+shared map layer. Vanilla lodestone compass binding alone does not register a
+waypoint.
 
 BlueMap's current built-in commands do not provide persistent marker creation.
 Keep server configuration administrator-controlled and omit marker-command addons.
