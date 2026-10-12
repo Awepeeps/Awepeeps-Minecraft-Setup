@@ -1,7 +1,7 @@
 # Awepeeps Minecraft Setup
 
 A scaffold for a repeatable Minecraft server blueprint, with portable
-configuration templates, operating guides, and the first setup-owned plugin.
+configuration templates and operating guides.
 
 Deployment details and server data live outside this repository.
 
@@ -19,7 +19,7 @@ Deployment details and server data live outside this repository.
 |---|---|
 | `config/` | Portable configuration templates with placeholders |
 | `automation/` | Reusable setup, maintenance, and backup tools |
-| `plugins/` | Custom plugin source and build instructions |
+| `plugins/` | Custom plugin repository references |
 | `docs/` | Setup and operations guides |
 | `seasons/` | Sanitized season templates and release notes |
 
@@ -37,6 +37,8 @@ reset, restore-verification, and map-maintenance policy.
   and the guarded Mineflayer test harness. Do not publish these materials here.
 - **Awepeeps-BlueMap-Compass:** public source code and tests for custom compass
   navigation, released separately.
+- **Awepeeps-SpawnKit:** public generic one-time kit plugin; each consumer
+  supplies its own contents and optional date window.
 
 ## Before importing implementation
 
@@ -58,4 +60,5 @@ Work in `deathpie/Awepeeps-Minecraft-Setup`, using `origin` for the personal for
 and `upstream` for the org. Submit pull requests against the org's `main` branch.
 The actual running instance is managed in a separate private deployment repository.
 Custom compass navigation is maintained separately in
-`Awepeeps/Awepeeps-BlueMap-Compass`.
+`Awepeeps/Awepeeps-BlueMap-Compass`. Generic spawn kits are maintained
+separately in `Awepeeps/Awepeeps-SpawnKit`.

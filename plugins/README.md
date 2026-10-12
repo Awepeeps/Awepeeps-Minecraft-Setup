@@ -1,8 +1,11 @@
 # Custom plugins
 
-Reviewed plugin source, build instructions, and tests live in the subdirectories
-here. Generated binaries and runtime plugin data are excluded.
+Custom plugins are maintained in their own repositories, with exact source and
+artifact pins recorded by each consuming deployment. Generated binaries and
+runtime plugin data are excluded.
 
-- [Awepeeps Test Kit](AwepeepsTestKit/README.md) is a fail-closed, expiring
-  starter chest for disposable test worlds. It is not part of the live plugin
-  set.
+- [Awepeeps BlueMap Compass](https://github.com/Awepeeps/Awepeeps-BlueMap-Compass)
+  provides custom compass navigation.
+- [Awepeeps Spawn Kit](https://github.com/Awepeeps/Awepeeps-SpawnKit) provides
+  generic, server-configured one-time kit placement with safe spawn-area
+  discovery and an optional date window.
