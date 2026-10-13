@@ -84,3 +84,10 @@ The org repository is canonical: `Awepeeps/Awepeeps-Minecraft-Setup`.
 
 Before every push, scan the whole tree for secrets and instance values (see the
 CI secret scan and the checklist in [`docs/updating-plugins.md`](docs/updating-plugins.md)).
+
+## Working in this repository
+
+Repo-wide rules for agents are in [`AGENTS.md`](AGENTS.md). The sanitizing
+port workflow — turning a private-deployment change into a portable template — is
+in
+[`.agents/skills/portable-template-change/SKILL.md`](.agents/skills/portable-template-change/SKILL.md).
