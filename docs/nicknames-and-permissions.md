@@ -8,10 +8,12 @@ rendering is verified on Bedrock clients. This does not block EssentialsX.
 
 ## EssentialsX
 
-Choose a stable EssentialsX Core release only after verifying it against the
-exact Paper build and Java runtime. The current candidate still needs that
-validation; the commented manifest row is intentionally inactive until its
-release URL and SHA-256 have been verified. Merge
+Prefer a stable EssentialsX Core release that supports the exact Paper build and
+Java runtime. If no supported stable release exists, an official development
+build may be considered only when its immutable build or commit is recorded, the
+exact artifact SHA-256 is verified, and that artifact passes an isolated boot
+and feature check. Never use a moving `latest` URL. The manifest row remains
+inactive until its exact artifact URL and SHA-256 are verified. Merge
 [`config/plugins/EssentialsX/config.yml.template`](../config/plugins/EssentialsX/config.yml.template)
 into EssentialsX's generated config to enable nicknames in display names and the
 player list. It also selects Bukkit permissions so LuckPerms governs EssentialsX
