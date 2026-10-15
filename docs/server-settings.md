@@ -26,6 +26,12 @@ credentials out of this repository. Exact image behavior can vary by image
 version, so verify it against the selected image documentation and generated
 runtime state.
 
+Editing a template or a checkout file does not change a running server. Apply
+intended changes to the saved Minecraft instance environment in MCSManager and
+the relevant generated server or plugin files, then inspect the effective
+runtime state. A local `.env` mirror used by host scripts is a reference for
+those scripts; it is not authoritative for the Minecraft container.
+
 ## Access and identity
 
 - Keep the server allowlist enabled and enforced. `ENABLE_WHITELIST` and
