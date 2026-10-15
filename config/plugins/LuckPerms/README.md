@@ -26,13 +26,17 @@
 # For ChestCleaner, the default group gets stock brush-use permissions only.
 # Never op a friend to "make something work": grant the minimal permission.
 
-# EssentialsX Core: no extra default-group grants by default. Explicitly deny its
-# default-true access for the default group (see docs/nicknames-and-permissions.md):
+# EssentialsX Core: preserve vanilla access to the commands it shadows. These
+# three grants add no new capability (see docs/nicknames-and-permissions.md):
+#   /lp group default permission set essentials.help true
+#   /lp group default permission set essentials.me true
+#   /lp group default permission set essentials.msg true
+# Keep essentials.list ungranted because vanilla /list is operator-only.
+# Explicitly deny Core's default-true movement bypasses for the default group:
 #   /lp group default permission set essentials.back.onteleport false
 #   /lp group default permission set essentials.teleport.cooldown.bypass.back false
 #   /lp group default permission set essentials.teleport.cooldown.bypass.tpa false
-# If the owner chooses to allow self-service nicknames, grant only:
-#   /lp group default permission set essentials.nick true
-# Keep nick-for-others and all moderation/admin permissions ungranted to default.
+# Leave nickname, nick-for-others, moderation, admin, economy, home, teleport
+# and warp permissions ungranted to the default group.
 # No moderator group is created by this template. If needed, grant only:
 #   essentials.kick, essentials.mute, essentials.tempban, essentials.unban

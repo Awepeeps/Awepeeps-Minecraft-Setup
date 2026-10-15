@@ -34,16 +34,42 @@ EssentialsX Core also includes economy capabilities. This setup leaves them
 unused and grants no economy permissions. Optional EssentialsXChat, Spawn, and
 Discord add-on modules are not selected.
 
-Keep nickname use and moderation separate. Do not add EssentialsX permissions
-to the default group by default. Explicitly deny
-`essentials.back.onteleport`, `essentials.teleport.cooldown.bypass.back`, and
-`essentials.teleport.cooldown.bypass.tpa`; Core declares these as default-true.
+Keep `use-bukkit-permissions: true` and give the default group only these three
+vanilla-equivalent grants:
 
-If the owner chooses to let every player set a nickname, grant only
-`essentials.nick` to the default group. Keep `essentials.nick.others`, nickname
-format/color permissions, broad `essentials.*`, economy, home, teleport, and
-warp permissions ungranted. The owner can use operator access for initial
-nickname administration.
+| Node | Why it is granted |
+|---|---|
+| `essentials.help` | EssentialsX shadows plain `/help`; vanilla help is available by default. |
+| `essentials.me` | EssentialsX shadows plain `/me`; vanilla emote is available by default. |
+| `essentials.msg` | EssentialsX shadows plain `/msg`, including `/tell` and `/w`; vanilla private messaging is available by default. |
+
+These grants preserve the existing vanilla command baseline and add no new
+player capability. Keep `essentials.list` ungranted because native `/list` is
+already operator-only; the EssentialsX override should remain operator-only.
+For example, record the baseline in LuckPerms with:
+
+```text
+/lp group default permission set essentials.help true
+/lp group default permission set essentials.me true
+/lp group default permission set essentials.msg true
+```
+
+Core declares `essentials.back.onteleport`,
+`essentials.teleport.cooldown.bypass.back`, and
+`essentials.teleport.cooldown.bypass.tpa` default-true. Explicitly deny these
+for the default group:
+
+```text
+/lp group default permission set essentials.back.onteleport false
+/lp group default permission set essentials.teleport.cooldown.bypass.back false
+/lp group default permission set essentials.teleport.cooldown.bypass.tpa false
+```
+
+Keep nickname, nickname-for-others, nickname-format/color, moderation, admin,
+economy, home, teleport, and warp permissions ungranted to the default group.
+The owner keeps operator access for nickname administration. If a separate
+moderator group is needed, grant it only the individually reviewed moderation
+nodes; do not grant `essentials.*`.
 
 No moderator group is provisioned by default. If moderation commands are needed,
 create a separate vetted group and grant only `essentials.kick`,
