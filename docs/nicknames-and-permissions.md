@@ -1,10 +1,11 @@
 # Nicknames and permissions
 
-EssentialsX Core is the planned source of player nicknames and moderation
-commands. TAB may format the tab list, but it cannot replace Minecraft's actual
-overhead player name. Above-head nickname display is deferred until a maintained
+EssentialsX Core is selected for player nicknames and moderation commands. TAB
+may format the tab list, but it cannot replace Minecraft's actual overhead
+player name. Above-head nickname display is deferred until a maintained
 community plugin has an explicit Paper 26.3 release and its Geyser/Floodgate
 rendering is verified on Bedrock clients. This does not block EssentialsX.
+See the [plugin inventory](plugins.md) for the pin and evidence status.
 
 ## EssentialsX
 
@@ -81,11 +82,11 @@ narrow grants.
 
 FreedomChat is optional. The portable config template sets `rewrite-chat: false`
 so it will not rewrite outgoing signed player chat into system messages. This
-means FreedomChat will not prevent reports of those messages. Other settings
-keep `claim-secure-chat-enforced: false`, so clients may continue to show secure
-chat warnings. Setting that option to true suppresses some warnings while
+means FreedomChat will not prevent reports of those messages. The public
+configuration template also sets `claim-secure-chat-enforced: false`, so clients
+may continue to show secure chat warnings. Setting that option to true suppresses some warnings while
 advertising that secure chat is enforced; that claim is separate from
-`rewrite-chat` and the template leaves it off. Client versions and access-token
+`rewrite-chat`; the public template leaves it off. Client versions and access-token
 state can still affect which warning is shown. Do not present the plugin as a
 chat-report protection or security control.
 

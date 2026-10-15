@@ -3,6 +3,10 @@
 Portable setup, upgrade, backup, and operations guides. Use examples and
 placeholders instead of live deployment details.
 
+Start with the [plugin inventory and decision log](plugins.md) for selected,
+deferred, and retired plugins, and the [server settings reference](server-settings.md)
+for vanilla properties, gamerules, Paper, plugin, and container configuration.
+
 - [Bootstrap](bootstrap.md): clean Linux host (and a WSL2 note) to a running,
   whitelist-only Paper server with the plugin set.
 - [Whitelist management](whitelist.md): allowlist policy and owner-reviewed

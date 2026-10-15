@@ -31,10 +31,12 @@ Never merge the private repository's history into this one.
 - Whitelist-only: `white-list`, `enforce-whitelist`, `online-mode` all on, with
   owner-reviewed manual approval for new Java and Bedrock players.
 - Bedrock cross-play via Geyser + Floodgate.
-- ViaVersion + ViaBackwards, LuckPerms, EssentialsX Core (version pending Paper
-  26.3 validation), BlueMap, Awepeeps-ChestCleaner, Awepeeps-BlueMap-Compass,
-  and (test-only) Awepeeps-SpawnKit. FreedomChat is optional; if installed, its
-  chat rewrite setting stays off.
+- ViaVersion + ViaBackwards, LuckPerms, EssentialsX Core, BlueMap,
+  Awepeeps-ChestCleaner, Awepeeps-BlueMap-Compass, and (test-only)
+  Awepeeps-SpawnKit are the selected portable stack. The template manifests
+  intentionally keep exact URLs and hashes as TODOs; they are not a ready-to-run
+  copy of a private staging server's pins. FreedomChat is optional and its
+  release-specific chat settings must be reviewed separately.
 - Plugins pinned by exact version or source commit **plus the SHA-256 of the jar**,
   and verified before install.
 - Verified backups, a guarded disposable-test world reset, and a maintenance report.
@@ -63,6 +65,11 @@ before installing plugins, and never invent a version or hash — measure it.
 | `seasons/` | Sanitized, per-server/season policy records |
 | `compose.yaml` | MCSManager panel (web + daemon) |
 | `.env.example` | Every documented variable with placeholder values |
+
+For plugin choices, their status and revisit conditions, see the
+[plugin inventory and decision log](docs/plugins.md). For how vanilla, Paper,
+plugin, and container settings fit together, see the
+[server settings reference](docs/server-settings.md).
 
 ## Testing
 
