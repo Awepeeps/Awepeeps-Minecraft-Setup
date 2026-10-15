@@ -22,8 +22,13 @@ that becomes `/data` inside the container).
 | `plugins/BlueMap/maps/example.conf.template` | `<instance-data>/plugins/BlueMap/maps/<map-id>.conf` |
 | `plugins/Geyser/config.yml.template` | `<instance-data>/plugins/Geyser-Spigot/config.yml` |
 | `plugins/Floodgate/config.yml.template` | `<instance-data>/plugins/floodgate/config.yml` |
-| `plugins/AwepeepsWhitelistGate/config.yml.template` | `<instance-data>/plugins/AwepeepsWhitelistGate/config.yml` |
 | `plugins/LuckPerms/README.md` | no file template; command-based basics |
+| `plugins/EssentialsX/config.yml.template` | `<instance-data>/plugins/Essentials/config.yml` |
+| `plugins/FreedomChat/config.yml.template` | `<instance-data>/plugins/FreedomChat/config.yml` |
+
+`plugins/AwepeepsWhitelistGate/config.yml.template` is retained only as a
+recovery reference for older installations. The plugin is retired from the
+recommended setup; follow [manual whitelist approval](../docs/whitelist.md).
 
 `config/sources/*.env.example` documents the source pins used by
 `automation/build-*.sh`. Copy an example to the matching `.env` and fill it in;

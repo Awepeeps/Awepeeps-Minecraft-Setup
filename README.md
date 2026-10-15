@@ -28,11 +28,13 @@ Never merge the private repository's history into this one.
 
 - Paper on Java 25 in the `itzg/minecraft-server` Docker image, managed through
   MCSManager (web panel + daemon).
-- Whitelist-only: `white-list`, `enforce-whitelist`, `online-mode` all on, plus a
-  Discord approval flow for join requests (Awepeeps-Whitelist-Gate).
+- Whitelist-only: `white-list`, `enforce-whitelist`, `online-mode` all on, with
+  owner-reviewed manual approval for new Java and Bedrock players.
 - Bedrock cross-play via Geyser + Floodgate.
-- ViaVersion + ViaBackwards, LuckPerms, BlueMap, Awepeeps-ChestCleaner,
-  Awepeeps-BlueMap-Compass, and (test-only) Awepeeps-SpawnKit.
+- ViaVersion + ViaBackwards, LuckPerms, EssentialsX Core (version pending Paper
+  26.3 validation), BlueMap, Awepeeps-ChestCleaner, Awepeeps-BlueMap-Compass,
+  and (test-only) Awepeeps-SpawnKit. FreedomChat is optional; if installed, its
+  chat rewrite setting stays off.
 - Plugins pinned by exact version or source commit **plus the SHA-256 of the jar**,
   and verified before install.
 - Verified backups, a guarded disposable-test world reset, and a maintenance report.
@@ -54,7 +56,7 @@ before installing plugins, and never invent a version or hash — measure it.
 
 | Path | Contents |
 |---|---|
-| `docs/` | Guides: bootstrap, whitelist, bedrock, bluemap, backups, world-reset, updating-plugins, testing, maintenance, local-recovery |
+| `docs/` | Guides: bootstrap, whitelist, bedrock, nicknames and permissions, bluemap, backups, world-reset, updating-plugins, testing, maintenance, local-recovery |
 | `config/` | Sanitized templates (`server.properties`, Paper defaults, plugin configs) and `config/sources/*.env.example` source pins |
 | `plugins/` | The plugin list and manifest templates (`plugins.list`, `test-plugins.list`) and the release/pin model |
 | `automation/` | Backup/verify/reset/report/build/install scripts and their mock tests |

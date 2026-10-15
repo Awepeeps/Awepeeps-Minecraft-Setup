@@ -8,6 +8,7 @@ set -euo pipefail
 umask 077
 BACKUP_ROOT="${BACKUP_ROOT:-/srv/minecraft/backups}"
 PLUGIN_DATA_DIRS="${PLUGIN_DATA_DIRS:-plugins/AwepeepsBlueMapCompass plugins/AwepeepsSpawnKit}"
+PLUGIN_DATA_PATHS="${PLUGIN_DATA_PATHS:-plugins/Essentials/config.yml plugins/Essentials/userdata}"
 archive="${1:-}"
 if [[ -z "$archive" ]]; then
   [[ ! -L "$BACKUP_ROOT/daily" ]] || { echo 'daily directory is a symlink' >&2; exit 2; }
@@ -15,12 +16,20 @@ if [[ -z "$archive" ]]; then
   [[ -n "$archive" ]] && archive="$BACKUP_ROOT/daily/$archive"
 fi
 [[ -f "$archive" && ! -L "$archive" ]] || { echo 'archive must be a regular, non-symlink file' >&2; exit 2; }
-PLUGIN_DATA_DIRS="$PLUGIN_DATA_DIRS" python3 - "$archive" <<'PY'
+PLUGIN_DATA_DIRS="$PLUGIN_DATA_DIRS" PLUGIN_DATA_PATHS="$PLUGIN_DATA_PATHS" python3 - "$archive" <<'PY'
 import os, pathlib, sys, tarfile, tempfile
 archive = pathlib.Path(sys.argv[1])
 allowed = {"world", "world_nether", "world_the_end", "server.properties", "backup-metadata.txt"}
+plugin_dirs = set()
 for rel in os.environ.get("PLUGIN_DATA_DIRS", "").split():
-    allowed.add(rel)
+    plugin_dirs.add(pathlib.PurePosixPath(rel).as_posix())
+plugin_paths = set(plugin_dirs)
+for rel in os.environ.get("PLUGIN_DATA_PATHS", "").split():
+    path = pathlib.PurePosixPath(rel)
+    if path.is_absolute() or ".." in path.parts or not path.parts or path.parts[0] != "plugins":
+        raise SystemExit(f"unsafe plugin data path in verifier configuration: {rel!r}")
+    plugin_paths.add(path.as_posix())
+allowed.update(plugin_dirs)
 with tarfile.open(archive, "r:gz") as tf:
     members = tf.getmembers()
     if not members:
@@ -32,8 +41,13 @@ with tarfile.open(archive, "r:gz") as tf:
             raise SystemExit(f"unsafe archive path: {m.name!r}")
         root = p.parts[0]
         if root not in allowed and not (root.startswith("paper-") and root.endswith(".jar") and len(p.parts) == 1):
-            if root != "plugins" or len(p.parts) < 2 or "/".join(p.parts[:2]) not in allowed:
+            if root != "plugins":
                 raise SystemExit(f"unexpected archive path: {m.name!r}")
+        if root == "plugins":
+            entry = p.as_posix()
+            permitted = any(entry == path or entry.startswith(path + "/") or (m.isdir() and path.startswith(entry + "/")) for path in plugin_paths)
+            if not permitted:
+                raise SystemExit(f"unexpected plugin archive path: {m.name!r}")
         if not (m.isfile() or m.isdir()):
             raise SystemExit(f"links and special files are forbidden: {m.name!r}")
         roots.add(root if root != "plugins" else "/".join(p.parts[:2]))
