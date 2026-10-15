@@ -28,6 +28,10 @@ the vanilla overhead name by itself. Install and configure the Essentials
 PlaceholderAPI expansion only if another installed plugin needs it. EssentialsX
 Core does not add a custom chat formatter.
 
+EssentialsX Core also includes economy capabilities. This setup leaves them
+unused and grants no economy permissions. Optional EssentialsXChat, Spawn, and
+Discord add-on modules are not selected.
+
 Keep nickname use and moderation separate. Do not add EssentialsX permissions
 to the default group by default. Explicitly deny
 `essentials.back.onteleport`, `essentials.teleport.cooldown.bypass.back`, and
