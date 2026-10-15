@@ -28,7 +28,7 @@ case "$1 $2" in
   'wait minecraft') [[ "${WAIT_FAIL:-0}" == 0 ]] || exit 1; echo "${WAIT_EXIT:-0}";;
   'exec -i') cat >/dev/null; [[ "${MANAGED_START_FAIL:-0}" == 0 ]];;
   'exec minecraft')
-    if [[ "${HANG_RCON:-}" == 'list' && "$3 $4" == 'rcon-cli list' ]] ||
+    if [[ "${HANG_RCON:-}" == 'list' && "$3 $4" == 'rcon-cli minecraft:list' ]] ||
        [[ "${HANG_RCON:-}" == 'set' && "$4" == *'players_sleeping_percentage 50'* ]] ||
        [[ "${HANG_RCON:-}" == 'query' && "$4" == *'players_sleeping_percentage'* && "$4" != *' 50'* ]]; then
       sleep 30
@@ -49,7 +49,7 @@ case "$1 $2" in
           rm -f -- "$SERVER_DIR/plugins/AwepeepsBlueMapCompass/banner-markers.yml"
           ln -s "$tmp/kit-target" "$SERVER_DIR/plugins/AwepeepsBlueMapCompass/banner-markers.yml"
         fi;;
-      'rcon-cli list') [[ "${UNHEALTHY:-0}" == 0 ]];;
+      'rcon-cli minecraft:list') [[ "${UNHEALTHY:-0}" == 0 ]];;
       'rcon-cli bluemap purge'*)
         map_id="${4#bluemap purge }"
         if [[ "${BLUEMAP_LOADING:-0}" == 1 ]]; then
@@ -121,7 +121,7 @@ export -f run run_default_prebackup has
 check expiry_no_docker bash -c 'run RESET_UNTIL=2026-01-01 && [[ ! -s "$CALLS" ]]'
 check expiry_keeps_test_kit_state bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"; printf tombstone > "$SERVER_DIR/plugins/AwepeepsSpawnKit/issued-kits.yml"; run RESET_UNTIL=2026-01-01 && [[ $(cat "$SERVER_DIR/plugins/AwepeepsSpawnKit/issued-kits.yml") == tombstone ]] && [[ ! -s "$CALLS" ]]; rm -rf "$SERVER_DIR/plugins"'
 check expiry_keeps_compass_markers bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsBlueMapCompass"; printf marker > "$SERVER_DIR/plugins/AwepeepsBlueMapCompass/banner-markers.yml"; run RESET_UNTIL=2026-01-01 && [[ $(cat "$SERVER_DIR/plugins/AwepeepsBlueMapCompass/banner-markers.yml") == marker ]] && [[ ! -s "$CALLS" ]]; rm -rf "$SERVER_DIR/plugins"'
-check successful_order bash -c 'run && grep -q "wait minecraft" "$CALLS" && grep -q "exec minecraft rcon-cli save-all flush" "$CALLS" && grep -q "exec minecraft rcon-cli stop" "$CALLS" && grep -q "exec -i mcsm-web node" "$CALLS" && grep -q "rcon-cli list" "$CALLS" && [[ $(grep -c "players_sleeping_percentage 50" "$CALLS") == 3 ]] && grep -qx level-seed=11 "$SERVER_DIR/server.properties" && grep -qx 1 "$STATE_DIR/seed-index"'
+check successful_order bash -c 'run && grep -q "wait minecraft" "$CALLS" && grep -q "exec minecraft rcon-cli save-all flush" "$CALLS" && grep -q "exec minecraft rcon-cli stop" "$CALLS" && grep -q "exec -i mcsm-web node" "$CALLS" && grep -q "rcon-cli minecraft:list" "$CALLS" && [[ $(grep -c "players_sleeping_percentage 50" "$CALLS") == 3 ]] && grep -qx level-seed=11 "$SERVER_DIR/server.properties" && grep -qx 1 "$STATE_DIR/seed-index"'
 check spawn_kit_loads_then_removes_bounded_area bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"; printf "spawn-kit:\n  enabled: true\n  house:\n    enabled: true\n" > "$SERVER_DIR/plugins/AwepeepsSpawnKit/config.yml"; run SPAWN_KIT_SETUP_COMPLETE=1 && grep -Fq "forceload add -36 -36 36 36" "$CALLS" && grep -Fq "forceload remove -36 -36 36 36" "$CALLS" && grep -Eq "setup-complete:[[:space:]]*true" "$SERVER_DIR/plugins/AwepeepsSpawnKit/issued-kits.yml"; rm -rf "$SERVER_DIR/plugins"'
 check spawn_kit_chest_only_waits_for_issue bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"; printf "spawn-kit:\n  enabled: true\n  house:\n    enabled: false\n    chest:\n      enabled: true\n" > "$SERVER_DIR/plugins/AwepeepsSpawnKit/config.yml"; run SPAWN_KIT_CHEST_ONLY=1 SPAWN_KIT_SETUP_TIMEOUT=5 && grep -Eq "issued:[[:space:]]*true" "$SERVER_DIR/plugins/AwepeepsSpawnKit/issued-kits.yml" && grep -Fq "forceload remove -36 -36 36 36" "$CALLS"; rm -rf "$SERVER_DIR/plugins"'
 check spawn_kit_load_timeout_still_cleans_ticket bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"; printf "spawn-kit:\n  enabled: true\n  house:\n    enabled: true\n" > "$SERVER_DIR/plugins/AwepeepsSpawnKit/config.yml"; run SPAWN_KIT_SETUP_TIMEOUT=2 && grep -Fq "forceload add -36 -36 36 36" "$CALLS" && grep -Fq "forceload remove -36 -36 36 36" "$CALLS"; rm -rf "$SERVER_DIR/plugins"'

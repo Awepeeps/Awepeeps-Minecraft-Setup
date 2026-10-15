@@ -198,7 +198,8 @@ fwhitelist add <bedrock-gamertag>
    `<instance-data>/plugins/` and record their SHA-256 in the manifest.
 4. Install order, restarting the instance from the panel after each group:
    ViaVersion + ViaBackwards → LuckPerms → EssentialsX Core (after validating
-   its release on this Paper build) → BlueMap →
+   its supported stable release, or an exact official development build if no
+   stable release supports this Paper version) → BlueMap →
    ChestCleaner → AwepeepsBlueMapCompass. Geyser + Floodgate come with the
    Bedrock step. FreedomChat is optional; see its template before installing.
 5. Check the console after each boot for plugin load errors.

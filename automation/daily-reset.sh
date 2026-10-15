@@ -291,7 +291,7 @@ while (( SECONDS - readiness_start < READINESS_TIMEOUT )); do
   remaining=$(( READINESS_TIMEOUT - (SECONDS - readiness_start) ))
   call_timeout=$RCON_CALL_TIMEOUT
   (( call_timeout > remaining )) && call_timeout=$remaining
-  if timeout --signal=TERM --kill-after="${RCON_KILL_AFTER}s" "${call_timeout}s" docker exec "$CONTAINER" rcon-cli 'list' >/dev/null 2>&1; then
+  if timeout --signal=TERM --kill-after="${RCON_KILL_AFTER}s" "${call_timeout}s" docker exec "$CONTAINER" rcon-cli 'minecraft:list' >/dev/null 2>&1; then
     ready=true
     break
   fi
