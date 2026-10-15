@@ -22,6 +22,10 @@ RCON_KILL_AFTER="${RCON_KILL_AFTER:-2}"
 PROTECTED_PATHS="${PROTECTED_PATHS:-/ /home /root /srv /mnt /opt /usr /var /etc}"
 # Plugin data directories included in the archive when present (relative to SERVER_DIR).
 PLUGIN_DATA_DIRS="${PLUGIN_DATA_DIRS:-plugins/AwepeepsBlueMapCompass plugins/AwepeepsSpawnKit}"
+# Narrow plugin paths included in addition to those directories (relative to SERVER_DIR).
+# Essentials includes its config and per-player userdata only (which may include
+# balances and locations), not kits, logs, or other plugin files.
+PLUGIN_DATA_PATHS="${PLUGIN_DATA_PATHS:-plugins/Essentials/config.yml plugins/Essentials/userdata}"
 
 die() { echo "backup: $*" >&2; exit 2; }
 log() { printf '%s %s\n' "$(TZ="$BACKUP_TIMEZONE" date '+%Y-%m-%d %H:%M:%S %Z')" "$*"; }
@@ -61,6 +65,15 @@ for rel in $PLUGIN_DATA_DIRS; do
   [[ ! -L "$target" ]] || die "plugin data directory is a symlink: $rel"
   if [[ -e "$target" ]]; then
     [[ -d "$target" && "$(realpath -e -- "$target")" == "$target" ]] || die "plugin data directory must be contained in SERVER_DIR: $rel"
+    plugin_data+=("$rel")
+  fi
+done
+for rel in $PLUGIN_DATA_PATHS; do
+  target="$server_dir/$rel"
+  [[ "$rel" != /* && "$rel" != *..* ]] || die "PLUGIN_DATA_PATHS entries must be relative paths inside SERVER_DIR: $rel"
+  [[ ! -L "$target" ]] || die "plugin data path is a symlink: $rel"
+  if [[ -e "$target" ]]; then
+    [[ ( -d "$target" || -f "$target" ) && "$(realpath -e -- "$target")" == "$target" ]] || die "plugin data path must be a contained regular file or directory: $rel"
     plugin_data+=("$rel")
   fi
 done

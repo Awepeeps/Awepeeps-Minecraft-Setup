@@ -1,8 +1,10 @@
 # Backups and restore
 
 Backups are private data: they contain `server.properties` (and therefore the
-RCON secret) and plugin data. Keep `BACKUP_ROOT` outside Git, outside the server
-data directory, and with owner-only permissions. The scripts use `umask 077`,
+RCON secret), plugin data, and EssentialsX per-player userdata. That userdata
+may include nicknames, balances, homes, and locations. Keep `BACKUP_ROOT`
+outside Git, outside the server data directory, and with owner-only permissions.
+The scripts use `umask 077`,
 create archives as mode 0600, and expect private directories (0700). Never copy
 an archive into a public repository.
 
@@ -13,7 +15,8 @@ an archive into a public repository.
 1. confirms the exact host directory is bind-mounted into the container at
    `DATA_DEST` (`/data`) and that the container is running,
 2. acquires the shared lifecycle lock (so it cannot overlap a reset),
-3. broadcasts, runs `save-off`, flushes saves, archives the world and plugin data,
+3. broadcasts, runs `save-off`, flushes saves, archives the world and the
+   explicitly allowlisted plugin data,
 4. always attempts `save-on` again on every exit path,
 5. validates the archive and only then publishes it atomically,
 6. rotates daily and weekly archives.
@@ -43,6 +46,14 @@ It rejects traversal, links and special files, requires `world/level.dat` and
 non-empty region data for every dimension, and then extracts. This proves archive
 integrity and safe extraction; it is **not** a boot test.
 
+The default plugin-data scope includes the BlueMap Compass and Spawn Kit data
+directories, plus only `plugins/Essentials/config.yml` and
+`plugins/Essentials/userdata/`. The main config is included; other EssentialsX
+files and directories such as kits, logs, and other configuration files are
+excluded. Per-player state may still contain economy or location data. Keep
+`.env`'s `PLUGIN_DATA_DIRS` and `PLUGIN_DATA_PATHS` aligned with
+`backup-verify.sh`; the verifier refuses unexpected plugin files.
+
 ## Scheduling
 
 Use one scheduler. A systemd **user** timer is recommended, with an explicit
@@ -71,7 +82,8 @@ managed lifecycle may remove the Docker container after it exits.
 1. Stop the instance from the panel.
 2. Preserve the current data directory (copy it aside) before changing anything.
 3. Verify the archive with `backup-verify.sh`, then extract it into a separate
-   staging directory and check that the worlds and `server.properties` are present.
+   staging directory and check that the worlds, `server.properties`, and
+   expected plugin state are present.
 4. Move the restored files into the instance data path.
 5. Reopen the instance **from the panel's lifecycle** — never `docker start` an
    MCSManager-managed container, because the panel may remove it after exit.

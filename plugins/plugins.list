@@ -19,12 +19,19 @@
 ViaVersion|GitHub Releases|5.12.1|TODO_RELEASE_JAR_URL|TODO_64_HEX_SHA256
 ViaBackwards|GitHub Releases|5.12.1|TODO_RELEASE_JAR_URL|TODO_64_HEX_SHA256
 LuckPerms|LuckPerms official download|5.5.87|TODO_RELEASE_JAR_URL|TODO_64_HEX_SHA256
+# EssentialsX Core is planned. Its stable release has not been validated on the
+# target Paper 26.3 build yet. Confirm the exact release first, then pin the
+# official jar URL and measured SHA-256; do not activate this placeholder entry.
+# EssentialsX|EssentialsX official GitHub release|TODO_VERSION|TODO_RELEASE_JAR_URL|TODO_64_HEX_SHA256
 BlueMap|Modrinth|5.29-paper|TODO_RELEASE_JAR_URL|TODO_64_HEX_SHA256
 # Geyser: the stable 2.11.3 release fails on Paper 26.3. Check for a stable
 # release that supports your Paper version; the reference instance used a 2.12.0
 # preview build. Prefer a stable release when one supports your version.
 Geyser|GeyserMC download (check for a stable release on your Paper version)|TODO_VERSION|TODO_DIRECT_JAR_URL|TODO_64_HEX_SHA256
 Floodgate|GeyserMC download|2.2.5|TODO_DIRECT_JAR_URL|TODO_64_HEX_SHA256
+# FreedomChat is an optional outgoing-chat reporting compatibility layer. If
+# selected, validate the target build and use the matching official Paper jar.
+# FreedomChat|Modrinth|TODO_VERSION|TODO_DIRECT_JAR_URL|TODO_64_HEX_SHA256
 
 # --- Awepeeps plugins (built from a pinned source commit) --------------------
 # Replace TODO_COMMIT with a full 40-character commit and fill the sha256 by
@@ -32,7 +39,5 @@ Floodgate|GeyserMC download|2.2.5|TODO_DIRECT_JAR_URL|TODO_64_HEX_SHA256
 ChestCleaner|Awepeeps-ChestCleaner source commit TODO_COMMIT|2.4.5-awepeeps.1|https://github.com/Awepeeps/Awepeeps-ChestCleaner/tree/TODO_COMMIT|TODO_64_HEX_SHA256
 AwepeepsBlueMapCompass|Awepeeps-BlueMap-Compass source commit TODO_COMMIT|1.4.1-awepeeps.8|https://github.com/Awepeeps/Awepeeps-BlueMap-Compass/tree/TODO_COMMIT|TODO_64_HEX_SHA256
 
-# --- Private plugin (not downloadable from this public repo) -----------------
-# Awepeeps-Whitelist-Gate is private and in progress. Obtain the reviewed jar
-# from the private repository, record its SHA-256, and install it manually.
-# AwepeepsWhitelistGate|Awepeeps-Whitelist-Gate (private)|TODO_VERSION|TODO_PRIVATE_JAR_URL|TODO_64_HEX_SHA256
+# Legacy note: Awepeeps-Whitelist-Gate is retired from the recommended setup.
+# Manual whitelist approval is documented in docs/whitelist.md.

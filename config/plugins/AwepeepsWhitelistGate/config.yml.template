@@ -1,3 +1,7 @@
+# LEGACY RECOVERY REFERENCE — Awepeeps Whitelist Gate is retired from the
+# recommended setup. New servers use owner-reviewed manual whitelist approval.
+# Do not install this plugin for a new server.
+#
 # Awepeeps Whitelist Gate — configuration.
 # Destination on the server: <instance-data>/plugins/AwepeepsWhitelistGate/config.yml
 #

@@ -1,0 +1,7 @@
+# EssentialsX Core settings to merge into its generated config.yml.
+# Destination on the server: <instance-data>/plugins/Essentials/config.yml
+# Enable EssentialsX nicknames in display names and the player list. This does
+# not configure a chat format or replace Minecraft's vanilla overhead name.
+use-bukkit-permissions: true
+change-displayname: true
+change-playerlist: true

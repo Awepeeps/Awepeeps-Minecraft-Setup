@@ -20,7 +20,12 @@ Placeholders you must replace:
 - Paper on Java 25, run by the `itzg/minecraft-server` Docker image.
 - MCSManager (web panel + daemon) managing that container.
 - Whitelist-only access (`white-list`, `enforce-whitelist`, `online-mode` all on).
+- Owner-reviewed manual approval for new Java and Bedrock players.
 - Bedrock cross-play through Geyser + Floodgate.
+- EssentialsX Core for nicknames and moderation after its chosen release passes
+  the exact Paper build check; use LuckPerms grants from
+  [`nicknames-and-permissions.md`](nicknames-and-permissions.md) instead of
+  operator access.
 - The group's plugin set, pinned to exact versions/commits and verified by SHA-256.
 - A web map (BlueMap) and a private, verified backup routine.
 
@@ -192,8 +197,10 @@ fwhitelist add <bedrock-gamertag>
    copies the verified jar to `artifacts/`. Copy those jars into
    `<instance-data>/plugins/` and record their SHA-256 in the manifest.
 4. Install order, restarting the instance from the panel after each group:
-   ViaVersion + ViaBackwards → LuckPerms → BlueMap → ChestCleaner →
-   AwepeepsBlueMapCompass. Geyser + Floodgate come with the Bedrock step.
+   ViaVersion + ViaBackwards → LuckPerms → EssentialsX Core (after validating
+   its release on this Paper build) → BlueMap →
+   ChestCleaner → AwepeepsBlueMapCompass. Geyser + Floodgate come with the
+   Bedrock step. FreedomChat is optional; see its template before installing.
 5. Check the console after each boot for plugin load errors.
 
 Geyser note: the stable 2.11.3 release fails on Paper 26.3. **Check for a stable
@@ -213,9 +220,15 @@ on first boot (do not replace the whole file):
   brush and `/cleaningitem set`.
 - AwepeepsBlueMapCompass: `config.yml` (lodestone/banner targets).
 - Geyser + Floodgate: `config.yml` key settings. See [bedrock.md](bedrock.md).
-- AwepeepsWhitelistGate (if you run it): the webhook URL is a secret supplied
-  through the `WLGATE_DISCORD_WEBHOOK_URL` environment variable. See
-  [whitelist.md](whitelist.md).
+- EssentialsX Core: review generated `config.yml` and apply the minimal LuckPerms
+  grants documented in [nicknames-and-permissions.md](nicknames-and-permissions.md).
+- FreedomChat (optional): merge `config/plugins/FreedomChat/config.yml.template`
+  and confirm the selected version supports `rewrite-chat: false`. With chat
+  rewriting disabled, this plugin does not make outgoing messages unreportable;
+  treat it only as a compatibility option, not a privacy or moderation control.
+- Overhead nicknames: deferred. Current community nameplate candidates do not
+  have a verified Paper 26.3 release with confirmed Geyser/Floodgate behavior.
+  EssentialsX nicknames in chat and tab remain independent of this decision.
 - AwepeepsSpawnKit: **test servers only.** Keep the live-safe template disabled; a
   disposable test server may use `preseason.example.yml`. See
   [world-reset.md](world-reset.md).
@@ -224,6 +237,11 @@ on first boot (do not replace the whole file):
 
 - [ ] Java client connects with the whitelisted account; a non-whitelisted name is rejected.
 - [ ] `/viaversion`, `/lp info`, `/bluemap` (or `/bluemap`) respond without errors.
+- [ ] EssentialsX Core loads at the exact tested version; the default group has
+      no new EssentialsX grants unless the owner deliberately enables self-nick,
+      and has no moderation/admin grants.
+- [ ] FreedomChat, if installed, loads and its generated config has
+      `rewrite-chat: false` and `claim-secure-chat-enforced: false`.
 - [ ] Console shows every pinned plugin loaded at the expected version.
 - [ ] BlueMap responds at `http://<host>:8100/` after a render.
 - [ ] Bedrock join works (see [bedrock.md](bedrock.md)).

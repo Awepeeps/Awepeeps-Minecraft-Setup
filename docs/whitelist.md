@@ -36,24 +36,17 @@ whitelist remove <name>
 fwhitelist remove <name>     # Bedrock
 ```
 
-## Awepeeps Whitelist Gate (Discord approval flow)
+## Manual approval is the default
 
-Awepeeps-Whitelist-Gate watches for join attempts from players who are not on the
-whitelist and notifies the owner in Discord. The owner approves from the console.
-It is an addition to the allowlist, never a replacement: the server stays
-`enforce-whitelist=true` whether or not the plugin is running.
+The rejected join attempt is the request. Review the exact Java name or Bedrock
+gamertag with the player, then add it from the server console using the commands
+above. Do not add a player until the owner has approved the request. The server
+remains allowlist-only before and after approval; no separate approval service or
+chat account link is required.
 
-- The plugin reads its webhook URL from the environment variable
-  `WLGATE_DISCORD_WEBHOOK_URL`. **That URL is a secret.** It belongs in the
-  private deployment's `.env` or a secret manager, and must never appear in Git,
-  in a config file that could be shared, or in logs and screenshots.
-- Because it is supplied as an environment variable, set it on the Docker
-  instance (the panel's instance environment), not in `config.yml`.
-- Approving a player is a console action, run by the owner. Players cannot
-  approve themselves.
-- The plugin repository is private and in progress. Follow its own README for the
-  exact approval command; the config template in `config/plugins/AwepeepsWhitelistGate/`
-  lists what is and is not confirmed (**TODO**).
+The legacy Awepeeps Whitelist Gate template is retained only for recovery of
+older installations. It is retired from the recommended setup and is not needed
+for manual approval.
 
 ## Rules of thumb
 

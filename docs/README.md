@@ -5,8 +5,10 @@ placeholders instead of live deployment details.
 
 - [Bootstrap](bootstrap.md): clean Linux host (and a WSL2 note) to a running,
   whitelist-only Paper server with the plugin set.
-- [Whitelist management](whitelist.md): allowlist policy, Java and Bedrock
-  onboarding, and the Discord approval flow (webhook is a secret).
+- [Whitelist management](whitelist.md): allowlist policy and owner-reviewed
+  manual approval for Java and Bedrock players.
+- [Nicknames and permissions](nicknames-and-permissions.md): EssentialsX setup,
+  minimal LuckPerms grants, and the limits on overhead nickname display.
 - [Bedrock access](bedrock.md): Geyser/Floodgate, UDP 19132, and the WSL2 NAT
   limitation with its two fixes.
 - [BlueMap](bluemap.md): viewer settings, explored-terrain policy, purge
