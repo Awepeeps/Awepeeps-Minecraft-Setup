@@ -52,8 +52,13 @@ private pins here.
 | TAB | Not selected for overhead names. | It can format the tab list but cannot replace the vanilla overhead player name. Revisit for tab-list presentation only, or if a separate requirement is validated. |
 | UnlimitedNametags | Deferred / unverified. | Compatibility with the target Paper 26.3 line and the Geyser/Bedrock client path is not established. Review its current release, maintenance, dependencies (including PacketEvents and PlaceholderAPI where required), and Java/Bedrock behavior before considering it. |
 | AdvancedWhitelist | Not selected. | Paper's native whitelist and manual owner approval cover the current workflow. Revisit if an actual approval workflow requirement appears that native commands cannot meet. |
-| CoreProtect, WorldGuard, GriefPrevention, WorldEdit, Chunky, Spark, PlaceholderAPI, and other suggested additions | Unevaluated; not selected. | Suggestions were not reviewed deeply enough to call them rejected or compatible. For each, first define a concrete need, then review maintenance, permissions, data/backup impact, Paper and Bedrock behavior, and test evidence. |
-| Bedrock compass marker rendering | Deferred. | Missing beam effects and moving height labels have been reported on Bedrock. Revisit after reproducing with supported Geyser/client versions and evaluating a focused fix. |
+| CoreProtect | Not selected / not needed for the current scope. | No current audit or rollback requirement. Revisit only if a new audit or rollback need appears. |
+| WorldGuard, GriefPrevention, WorldEdit, Chunky, Spark, PlaceholderAPI, and other suggested additions | Unevaluated; not selected. | Suggestions were not reviewed deeply enough to call them rejected or compatible. For each, first define a concrete need, then review maintenance, permissions, data/backup impact, Paper and Bedrock behavior, and test evidence. |
+
+Bedrock waypoint visuals are tracked externally in the plugin's own issue tracker,
+[Awepeeps-BlueMap-Compass issue #5](https://github.com/Awepeeps/Awepeeps-BlueMap-Compass/issues/5).
+That issue, not this page, carries the detail; it is not a plugin-selection TODO and
+does not gate the current stack.
 
 ## Retired plugins
 
