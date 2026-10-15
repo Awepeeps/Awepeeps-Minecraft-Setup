@@ -25,9 +25,9 @@ behind a reverse proxy with TLS) until you have decided to expose it.
 
 Set `min-inhabited-time: 30` in each map configuration
 (`plugins/BlueMap/maps/<map-id>.conf`, for example `world`,
-`world_the_nether`, `world_the_end`). At 20 game ticks per second, a chunk must
-accumulate about **1.5 seconds** of players being nearby before BlueMap renders
-it. Leave any inhabited-time radius at its default zero.
+`world_the_nether`, `world_the_end`). At 20 game ticks per second, this is an
+approximate threshold of 1.5 seconds of cumulative chunk inhabited time. Leave
+any inhabited-time radius at its default zero.
 
 This is a **map-render threshold**, not an exact record of what a client saw:
 nearby time can qualify a chunk, while client visibility and render timing are

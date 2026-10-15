@@ -1,5 +1,10 @@
 # Configuration templates
 
+See the [server settings reference](../docs/server-settings.md) for how vanilla
+properties, gamerules, Paper defaults, plugin files, and container environment
+settings relate. See the [plugin decision log](../docs/plugins.md) for the
+selected stack and each plugin's status.
+
 Sanitized templates for a fresh Paper server. Every value here is a generic
 placeholder or a safe default; instance-specific values (hostnames, paths,
 player lists, seeds, secrets) belong in the private deployment and in ignored

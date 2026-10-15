@@ -1,15 +1,19 @@
 # Plugins
 
-The plugin set for the server. Pins, URLs and SHA-256 digests live in
+See the [plugin inventory and decision log](../docs/plugins.md) for the
+canonical current template choices, behavior changes, evidence status, and
+revisit conditions. Pins, URLs and SHA-256 digests live in
 `plugins.list` (live-safe) and `test-plugins.list` (test-only). The group's own
 plugins are maintained in their own public repositories under the `Awepeeps` org;
 this repo records the pins and how to build and verify them, and never contains
 plugin runtime data or built binaries.
 
-EssentialsX Core is planned, but its version must be confirmed on the exact Paper
-build before enabling the manifest entry. TAB is not a replacement for the
-vanilla overhead player name; overhead nickname rendering is deferred until a
-community plugin has a verified Paper 26.3 release and Bedrock behavior.
+EssentialsX Core is selected, but the public manifest entry remains an
+unfilled template until an exact release and measured jar digest are reviewed
+for the target Paper build. This portable template does not mirror private
+staging pins. TAB is not a replacement for the vanilla overhead player name;
+overhead nickname rendering is deferred pending target-Paper and Bedrock
+verification.
 
 ## Third-party plugins
 
@@ -18,8 +22,8 @@ community plugin has a verified Paper 26.3 release and Bedrock behavior.
 | [ViaVersion](https://github.com/ViaVersion/ViaVersion) | Lets newer Java clients join an older server. | No |
 | [ViaBackwards](https://github.com/ViaVersion/ViaBackwards) | Lets older Java clients (including Geyser's emulation) join a newer server. Keep matching ViaVersion. | No |
 | [LuckPerms](https://luckperms.net/) | Permissions. Grants the minimal permission instead of opping friends. | No |
-| [EssentialsX Core](https://github.com/EssentialsX/Essentials) | Nicknames, moderation commands, and core utilities. **Planned:** validate the chosen stable release on the exact Paper build before pinning. Use [`nicknames-and-permissions.md`](../docs/nicknames-and-permissions.md) for the permission policy. | No |
-| [FreedomChat](https://github.com/ocelotpotpie/FreedomChat) | Optional chat compatibility layer. If used, set `rewrite-chat: false`; outgoing signed chat remains reportable. It is not a chat-report protection feature. | Optional; no default pin |
+| [EssentialsX Core](https://github.com/EssentialsX/Essentials) | Selected for nicknames, moderation commands, and core utilities. The public manifest pin remains unfilled; see [`docs/plugins.md`](../docs/plugins.md) for status and validation scope, and [`nicknames-and-permissions.md`](../docs/nicknames-and-permissions.md) for permission policy. | No |
+| [FreedomChat](https://github.com/ocelotpotpie/FreedomChat) | Optional chat compatibility layer, selected in the reference staging stack. If used, settings are release-specific; outgoing signed chat remains reportable. It is not a chat-report protection feature. | Optional; public pin unfilled |
 | [BlueMap](https://bluemap.bluecolored.de/) | Web map. | No |
 | [Geyser](https://geysermc.org/) | Translates Bedrock clients to Java. Check for a stable release that supports your Paper version. | No |
 | [Floodgate](https://geysermc.org/) | Lets Bedrock players in without a Java account. | No |
@@ -32,11 +36,12 @@ community plugin has a verified Paper 26.3 release and Bedrock behavior.
 | Awepeeps BlueMap Compass | [Awepeeps-BlueMap-Compass](https://github.com/Awepeeps/Awepeeps-BlueMap-Compass) | Waypoints/compass integration with BlueMap (lodestone/banner markers, no teleport). | No |
 | Awepeeps Spawn Kit | [Awepeeps-SpawnKit](https://github.com/Awepeeps/Awepeeps-SpawnKit) | Starter house + supply chest, a protected spawn pad, and a BlueMap spawn marker. | **Yes — test only** |
 
-Reference versions on the live set: BlueMap Compass `1.4.1-awepeeps.8`,
-ChestCleaner `2.4.5-awepeeps.1`. Spawn Kit's current reference pin is `1.1.3`
-with a `1.2.0` redesign in progress upstream, and it is never added to the live
-set. No plugin version is self-updating: the manifest pins an exact version (or
-commit) and the jar digest.
+Version strings currently present in the manifests are template references,
+not a claim about what is installed or validated on any particular server.
+Spawn Kit remains test-only. Exact deployable pins belong in the consuming
+server's control checkout; a release is updated only after measuring and
+reviewing its artifact or source commit and jar digest. No plugin version is
+self-updating.
 
 **Retired:** the older `Navigator` plugin is no longer current. Its roles were
 split into Awepeeps-SpawnKit (spawn features) and Awepeeps-BlueMap-Compass
