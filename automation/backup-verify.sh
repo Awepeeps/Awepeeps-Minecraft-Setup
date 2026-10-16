@@ -8,7 +8,7 @@ set -euo pipefail
 umask 077
 BACKUP_ROOT="${BACKUP_ROOT:-/srv/minecraft/backups}"
 PLUGIN_DATA_DIRS="${PLUGIN_DATA_DIRS:-plugins/AwepeepsBlueMapCompass plugins/AwepeepsSpawnKit}"
-PLUGIN_DATA_PATHS="${PLUGIN_DATA_PATHS:-plugins/Essentials/config.yml plugins/Essentials/userdata}"
+PLUGIN_DATA_PATHS="${PLUGIN_DATA_PATHS:-plugins/Essentials/config.yml plugins/Essentials/userdata plugins/Geyser-Spigot/config.yml plugins/Geyser-Spigot/nethernet}"
 archive="${1:-}"
 if [[ -z "$archive" ]]; then
   [[ ! -L "$BACKUP_ROOT/daily" ]] || { echo 'daily directory is a symlink' >&2; exit 2; }

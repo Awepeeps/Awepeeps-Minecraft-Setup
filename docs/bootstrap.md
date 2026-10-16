@@ -128,8 +128,14 @@ Ports to publish on the instance:
 | Port | Protocol | Purpose |
 |---|---|---|
 | 25565 | tcp | Java players |
-| 19132 | udp | Bedrock players (Geyser) |
+| 19132 | udp | Bedrock RakNet — older clients (Geyser) |
+| 19132 | tcp | Bedrock NetherNet HTTP signaling (Geyser, Bedrock 26.40+) |
+| 19133 | udp | Bedrock NetherNet media (Geyser, Bedrock 26.40+) |
 | 8100 | tcp | BlueMap web map (LAN-only until a reverse proxy/TLS is set up) |
+
+Bedrock 26.40+ clients use NetherNet, which adds TCP 19132 and UDP 19133;
+older clients keep using UDP 19132. See
+[bedrock.md](bedrock.md#5-nethernet-bedrock-2640-transport).
 
 ## 6. First start
 
@@ -220,7 +226,11 @@ on first boot (do not replace the whole file):
   `config/plugins/LuckPerms/README.md` and set the cleaning item in game with a
   brush and `/cleaningitem set`.
 - AwepeepsBlueMapCompass: `config.yml` (lodestone/banner targets).
-- Geyser + Floodgate: `config.yml` key settings. See [bedrock.md](bedrock.md).
+- Geyser + Floodgate: `config.yml` key settings. Once `transport` is `both` or
+  `nethernet`, `bedrock.signaling.builtin.advertise-addresses` **must** list every
+  address players reach NetherNet on (`host:19133`), never the container's
+  internal address; an empty list only works when every player reaches the address
+  Geyser bound. See [bedrock.md](bedrock.md).
 - EssentialsX Core: review generated `config.yml` and apply the minimal LuckPerms
   grants documented in [nicknames-and-permissions.md](nicknames-and-permissions.md).
 - FreedomChat (optional): merge `config/plugins/FreedomChat/config.yml.template`
@@ -245,7 +255,13 @@ on first boot (do not replace the whole file):
       `rewrite-chat: false` and `claim-secure-chat-enforced: false`.
 - [ ] Console shows every pinned plugin loaded at the expected version.
 - [ ] BlueMap responds at `http://<host>:8100/` after a render.
-- [ ] Bedrock join works (see [bedrock.md](bedrock.md)).
+- [ ] Bedrock join works (see [bedrock.md](bedrock.md)), and for Bedrock 26.40+
+      `docker port <container>` shows `19132/tcp` and `19133/udp` with
+      `curl http://<host>:19132/v1/join` returning the server-info JSON.
+- [ ] `bedrock.signaling.builtin.advertise-addresses` lists every address your
+      players use (each as `host:19133`) and never the container's internal
+      address; it may stay empty only if every player reaches Geyser's bound
+      address.
 - [ ] `automation/backup.sh` produces a verified archive and `automation/backup-verify.sh` accepts it.
 
 ## 11. Not ready for the internet until
@@ -266,13 +282,14 @@ on first boot (do not replace the whole file):
 If the host is Windows with WSL2: run everything above **inside** the distro
 (with systemd enabled and `dockerd` running in the distro, not Docker Desktop).
 One limitation matters: on Windows 10, WSL2 uses NAT networking and Windows'
-`netsh portproxy` is TCP-only, so **inbound UDP 19132 from the LAN cannot reach
-the guest**. Fix it with one of:
+`netsh portproxy` is TCP-only, so **inbound UDP 19132 and 19133 from the LAN
+cannot reach the guest**. Fix it with one of:
 
 - **Mirrored networking** (Windows 11 22H2+): enables LAN access to the guest
   directly; or
-- a **UDP forwarder** on the Windows host that relays 19132 into the WSL guest.
+- a **UDP forwarder** on the Windows host that relays 19132 and 19133 into the
+  WSL guest.
 
-TCP 25565 already forwards to the guest through the usual WSL TCP proxy. See
-[bedrock.md](bedrock.md) for details and the caveat that the guest IP changes on
-reboot.
+TCP 25565 and TCP 19132 already forward to the guest through the usual WSL TCP
+proxy. See [bedrock.md](bedrock.md) for details and the caveat that the guest IP
+changes on reboot.

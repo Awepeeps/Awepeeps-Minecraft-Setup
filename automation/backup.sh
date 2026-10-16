@@ -24,8 +24,9 @@ PROTECTED_PATHS="${PROTECTED_PATHS:-/ /home /root /srv /mnt /opt /usr /var /etc}
 PLUGIN_DATA_DIRS="${PLUGIN_DATA_DIRS:-plugins/AwepeepsBlueMapCompass plugins/AwepeepsSpawnKit}"
 # Narrow plugin paths included in addition to those directories (relative to SERVER_DIR).
 # Essentials includes its config and per-player userdata only (which may include
-# balances and locations), not kits, logs, or other plugin files.
-PLUGIN_DATA_PATHS="${PLUGIN_DATA_PATHS:-plugins/Essentials/config.yml plugins/Essentials/userdata}"
+# balances and locations), not kits, logs, or other plugin files. Geyser includes
+# its config and nethernet/ (the NetherNet identity.pem operator key) only.
+PLUGIN_DATA_PATHS="${PLUGIN_DATA_PATHS:-plugins/Essentials/config.yml plugins/Essentials/userdata plugins/Geyser-Spigot/config.yml plugins/Geyser-Spigot/nethernet}"
 
 die() { echo "backup: $*" >&2; exit 2; }
 log() { printf '%s %s\n' "$(TZ="$BACKUP_TIMEZONE" date '+%Y-%m-%d %H:%M:%S %Z')" "$*"; }

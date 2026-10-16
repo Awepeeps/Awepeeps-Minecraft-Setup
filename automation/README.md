@@ -13,7 +13,7 @@ without Docker, network, or a live server.
 
 | Script | Purpose |
 |---|---|
-| `backup.sh` | Live-safe backup: verifies the mount, locks, `save-off`/flush, archives the world plus allowlisted plugin data and Essentials config/per-player userdata, validates, publishes atomically, rotates 7 daily / 4 weekly. |
+| `backup.sh` | Live-safe backup: verifies the mount, locks, `save-off`/flush, archives the world plus allowlisted plugin data (Essentials config/per-player userdata, Geyser config and NetherNet identity key), validates, publishes atomically, rotates 7 daily / 4 weekly. |
 | `backup-verify.sh` | Offline integrity, allowlisted plugin-path safety, and extraction check of one archive (or the newest). |
 | `backup-scheduled.sh` | Phase gate around `backup.sh`: runs only in the active test/live phase, otherwise no-ops before touching Docker or storage. |
 | `install-plugins.sh` | Downloads a manifest's pinned jars, verifies each SHA-256, and copies them into `plugins/`. Skips placeholders and non-jar (source-built) entries. |

@@ -10,6 +10,10 @@ printf 'change-displayname: true\n' > "$tmp/server/plugins/Essentials/config.yml
 printf 'nickname: Example\n' > "$tmp/server/plugins/Essentials/userdata/example.yml"
 mkdir -p "$tmp/server/plugins/Essentials/kits"
 printf 'private-kit: contents\n' > "$tmp/server/plugins/Essentials/kits/example.yml"
+mkdir -p "$tmp/server/plugins/Geyser-Spigot/nethernet" "$tmp/server/plugins/Geyser-Spigot/logs"
+printf 'bedrock:\n  port: 19132\n' > "$tmp/server/plugins/Geyser-Spigot/config.yml"
+printf 'operator-key\n' > "$tmp/server/plugins/Geyser-Spigot/nethernet/identity.pem"
+printf 'chat log\n' > "$tmp/server/plugins/Geyser-Spigot/logs/geyser.log"
 echo level-name=world > "$tmp/server/server.properties"; echo level > "$tmp/server/world/level.dat"; echo region > "$tmp/server/world/dimensions/minecraft/overworld/region/r.0.0.mca"; echo region > "$tmp/server/world/dimensions/minecraft/the_nether/region/r.0.0.mca"; echo region > "$tmp/server/world/dimensions/minecraft/the_end/region/r.0.0.mca"
 cat > "$tmp/bin/docker" <<'SH'
 #!/bin/bash
@@ -37,7 +41,11 @@ check compass_plugin_data_included bash -c 'tar -tzf "$ARCHIVE" | grep -q plugin
 check spawn_kit_state_included bash -c 'tar -tzf "$ARCHIVE" | grep -q plugins/AwepeepsSpawnKit/issued-kits.yml'
 check essentials_config_and_userdata_included bash -c 'tar -tzf "$ARCHIVE" | grep -q plugins/Essentials/config.yml && tar -tzf "$ARCHIVE" | grep -q plugins/Essentials/userdata/example.yml'
 check essentials_unneeded_plugin_data_excluded bash -c '! tar -tzf "$ARCHIVE" | grep -q plugins/Essentials/kits'
+check geyser_config_and_identity_included bash -c 'tar -tzf "$ARCHIVE" | grep -q plugins/Geyser-Spigot/config.yml && tar -tzf "$ARCHIVE" | grep -q plugins/Geyser-Spigot/nethernet/identity.pem'
+check geyser_unselected_data_excluded bash -c '! tar -tzf "$ARCHIVE" | grep -q plugins/Geyser-Spigot/logs'
 check retention_deduplicates_same_day bash -c 'stamp=$(basename "$ARCHIVE" .tar.gz); day=${stamp#world-}; day=${day%-*}; cp "$ARCHIVE" "$BACKUP_ROOT/daily/world-${day}-000001.tar.gz"; sleep 1; run && [[ $(find "$BACKUP_ROOT/daily" -maxdepth 1 -name "world-*.tar.gz" | wc -l) == 1 ]]'
+archive=("$BACKUP_ROOT"/daily/world-*.tar.gz); ARCHIVE="${archive[0]}"; export ARCHIVE
+check geyser_nethernet_absent_fresh_install bash -c 'rm -rf "$SERVER_DIR/plugins/Geyser-Spigot/nethernet"; rc=1; if run; then a=("$BACKUP_ROOT"/daily/world-*.tar.gz); bash "$root/automation/backup-verify.sh" "${a[0]}" >/dev/null && ! tar -tzf "${a[0]}" | grep -q plugins/Geyser-Spigot/nethernet/ && rc=0; fi; mkdir -p "$SERVER_DIR/plugins/Geyser-Spigot/nethernet"; exit $rc'
 archive=("$BACKUP_ROOT"/daily/world-*.tar.gz); ARCHIVE="${archive[0]}"; export ARCHIVE
 check save_off_failure_attempts_restore bash -c '! run FAIL_RCON=save-off && [[ -f "$SAVE_ON" ]]'
 check save_on_cleanup_failure_fails_backup bash -c '! run FAIL_RCON=save-on && [[ ! -f "$SAVE_ON" ]]'
@@ -45,6 +53,7 @@ check partial_archive_failure_save_on bash -c 'mkdir -p "$tmp/bin"; printf "#!/b
 check symlink_world_rejected bash -c 'mv "$SERVER_DIR/world" "$tmp/world-real"; ln -s "$tmp/world-real" "$SERVER_DIR/world"; ! run && ! grep -q "exec minecraft" "$CALLS"; rm "$SERVER_DIR/world"; mv "$tmp/world-real" "$SERVER_DIR/world"'
 check spawn_kit_symlink_rejected bash -c 'rm -rf "$SERVER_DIR/plugins/AwepeepsSpawnKit"; ln -s "$tmp/outside" "$SERVER_DIR/plugins/AwepeepsSpawnKit"; ! run && ! grep -q "exec minecraft" "$CALLS"; rm "$SERVER_DIR/plugins/AwepeepsSpawnKit"'
 check essentials_userdata_symlink_rejected bash -c 'rm -rf "$SERVER_DIR/plugins/Essentials/userdata"; ln -s "$tmp/outside" "$SERVER_DIR/plugins/Essentials/userdata"; ! run && ! grep -q "exec minecraft" "$CALLS"; rm "$SERVER_DIR/plugins/Essentials/userdata"; mkdir "$SERVER_DIR/plugins/Essentials/userdata"'
+check geyser_nethernet_symlink_rejected bash -c 'rm -rf "$SERVER_DIR/plugins/Geyser-Spigot/nethernet"; ln -s "$tmp/outside" "$SERVER_DIR/plugins/Geyser-Spigot/nethernet"; ! run && ! grep -q "exec minecraft" "$CALLS"; rm "$SERVER_DIR/plugins/Geyser-Spigot/nethernet"; mkdir "$SERVER_DIR/plugins/Geyser-Spigot/nethernet"'
 check malformed_retention_rejected bash -c '! run KEEP_DAILY=1x'
 check verify_traversal_rejected bash -c 'python3 - "$ARCHIVE" "$tmp/bad.tar.gz" <<"PY"
 import sys,tarfile
