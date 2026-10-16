@@ -61,24 +61,6 @@ case "$1 $2" in
         if [[ "${BLUEMAP_UNKNOWN:-}" == "$map_id" ]]; then echo "Unknown map $map_id"; exit 0; fi
         if [[ "${BLUEMAP_ACK:-}" == prefix ]]; then printf 'Scheduled a new task to purge map %s_other\n' "$map_id"; exit 0; fi
         printf '\033[32m§x§F§F§0§0§0§0Scheduled a new task to purge map %s\033[0m\r\nUse /bluemap to see the progress\r\n' "$map_id";;
-      'rcon-cli execute in minecraft:overworld run forceload query')
-        if [[ "${FORCELOAD_EXISTS:-0}" == 1 ]]; then
-          echo 'Some chunks are marked for force loading in minecraft:overworld'
-        else
-          echo 'No force loaded chunks were found in minecraft:overworld'
-        fi;;
-      'rcon-cli execute in minecraft:overworld run forceload add '*)
-        if [[ "${SPAWN_KIT_SETUP_COMPLETE:-0}" == 1 ]]; then
-          mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"
-          printf 'worlds:\n  test:\n    setup-complete: true\n' > "$SERVER_DIR/plugins/AwepeepsSpawnKit/issued-kits.yml"
-        elif [[ "${SPAWN_KIT_CHEST_ONLY:-0}" == 1 ]]; then
-          mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"
-          printf 'worlds:\n  test:\n    issued: true\n' > "$SERVER_DIR/plugins/AwepeepsSpawnKit/issued-kits.yml"
-        fi
-        if [[ "${SPAWN_KIT_BAD_ADD_ACK:-0}" == 1 ]]; then echo 'Invalid chunk area'; else echo 'Marked 36 chunks in minecraft:overworld to be force loaded'; fi;;
-      'rcon-cli execute in minecraft:overworld run forceload remove '*)
-        [[ "${SPAWN_KIT_REMOVE_FAIL:-0}" == 0 ]] || exit 1
-        echo 'Unmarked 36 chunks in minecraft:overworld for force loading';;
       'rcon-cli execute'*)
         case "$4" in
           *'players_sleeping_percentage 50'*) [[ "${GAMERULE_SET_FAIL:-}" == '' || "$4" != *"$GAMERULE_SET_FAIL"* ]];;
@@ -105,7 +87,7 @@ EOF
 chmod +x "$tmp/bin/rm"
 export PATH="$tmp/bin:$PATH" CALLS="$tmp/calls" SERVER_DIR="$tmp/server"
 export CONTAINER=minecraft SEEDS_FILE="$tmp/seeds" STATE_DIR="$tmp/state"
-export RESET_UNTIL=2026-11-28
+export RESET_UNTIL=2026-12-31
 export PREWIPE_BACKUP=0
 export READINESS_TIMEOUT=1 READINESS_INTERVAL=1
 export MCSM_NODE_ID=0123456789abcdef0123456789abcdef
@@ -122,13 +104,11 @@ check expiry_no_docker bash -c 'run RESET_UNTIL=2026-01-01 && [[ ! -s "$CALLS" ]
 check expiry_keeps_test_kit_state bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"; printf tombstone > "$SERVER_DIR/plugins/AwepeepsSpawnKit/issued-kits.yml"; run RESET_UNTIL=2026-01-01 && [[ $(cat "$SERVER_DIR/plugins/AwepeepsSpawnKit/issued-kits.yml") == tombstone ]] && [[ ! -s "$CALLS" ]]; rm -rf "$SERVER_DIR/plugins"'
 check expiry_keeps_compass_markers bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsBlueMapCompass"; printf marker > "$SERVER_DIR/plugins/AwepeepsBlueMapCompass/banner-markers.yml"; run RESET_UNTIL=2026-01-01 && [[ $(cat "$SERVER_DIR/plugins/AwepeepsBlueMapCompass/banner-markers.yml") == marker ]] && [[ ! -s "$CALLS" ]]; rm -rf "$SERVER_DIR/plugins"'
 check successful_order bash -c 'run && grep -q "wait minecraft" "$CALLS" && grep -q "exec minecraft rcon-cli save-all flush" "$CALLS" && grep -q "exec minecraft rcon-cli stop" "$CALLS" && grep -q "exec -i mcsm-web node" "$CALLS" && grep -q "rcon-cli minecraft:list" "$CALLS" && [[ $(grep -c "players_sleeping_percentage 50" "$CALLS") == 3 ]] && grep -qx level-seed=11 "$SERVER_DIR/server.properties" && grep -qx 1 "$STATE_DIR/seed-index"'
-check spawn_kit_loads_then_removes_bounded_area bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"; printf "spawn-kit:\n  enabled: true\n  house:\n    enabled: true\n" > "$SERVER_DIR/plugins/AwepeepsSpawnKit/config.yml"; run SPAWN_KIT_SETUP_COMPLETE=1 && grep -Fq "forceload add -36 -36 36 36" "$CALLS" && grep -Fq "forceload remove -36 -36 36 36" "$CALLS" && grep -Eq "setup-complete:[[:space:]]*true" "$SERVER_DIR/plugins/AwepeepsSpawnKit/issued-kits.yml"; rm -rf "$SERVER_DIR/plugins"'
-check spawn_kit_chest_only_waits_for_issue bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"; printf "spawn-kit:\n  enabled: true\n  house:\n    enabled: false\n    chest:\n      enabled: true\n" > "$SERVER_DIR/plugins/AwepeepsSpawnKit/config.yml"; run SPAWN_KIT_CHEST_ONLY=1 SPAWN_KIT_SETUP_TIMEOUT=5 && grep -Eq "issued:[[:space:]]*true" "$SERVER_DIR/plugins/AwepeepsSpawnKit/issued-kits.yml" && grep -Fq "forceload remove -36 -36 36 36" "$CALLS"; rm -rf "$SERVER_DIR/plugins"'
-check spawn_kit_load_timeout_still_cleans_ticket bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"; printf "spawn-kit:\n  enabled: true\n  house:\n    enabled: true\n" > "$SERVER_DIR/plugins/AwepeepsSpawnKit/config.yml"; run SPAWN_KIT_SETUP_TIMEOUT=2 && grep -Fq "forceload add -36 -36 36 36" "$CALLS" && grep -Fq "forceload remove -36 -36 36 36" "$CALLS"; rm -rf "$SERVER_DIR/plugins"'
-check spawn_kit_bad_add_ack_removes_ticket bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"; printf "spawn-kit:\n  enabled: true\n  house:\n    enabled: true\n" > "$SERVER_DIR/plugins/AwepeepsSpawnKit/config.yml"; ! run SPAWN_KIT_BAD_ADD_ACK=1 && grep -Fq "forceload remove -36 -36 36 36" "$CALLS"; rm -rf "$SERVER_DIR/plugins"'
-check spawn_kit_preserves_existing_force_tickets bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"; printf "spawn-kit:\n  enabled: true\n  house:\n    enabled: true\n" > "$SERVER_DIR/plugins/AwepeepsSpawnKit/config.yml"; run FORCELOAD_EXISTS=1 && grep -q "forceload query" "$CALLS" && ! grep -q "forceload add\|forceload remove" "$CALLS"; rm -rf "$SERVER_DIR/plugins"'
-check spawn_kit_disabled_features_skip_loading bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"; printf "spawn-kit:\n  enabled: true\n  spawn-marker:\n    enabled: false\n  house:\n    enabled: false\n    chest:\n      enabled: false\n" > "$SERVER_DIR/plugins/AwepeepsSpawnKit/config.yml"; run && ! grep -q "forceload" "$CALLS"; rm -rf "$SERVER_DIR/plugins"'
-check spawn_kit_load_bounds_validated_before_stop bash -c '! run SPAWN_KIT_LOAD_RADIUS=41 && ! has "wait minecraft"; ! run SPAWN_KIT_LOAD_X=999999999 && ! has "wait minecraft"; ! run SPAWN_KIT_LOAD_X=29999984 && ! has "wait minecraft"'
+# AwepeepsSpawnKit 1.2.x loads its own build chunks with plugin tickets, so the
+# reset must never force-load a spawn area: a leftover forceload would be
+# permanent, and the old 32-block-search bounds no longer describe the layout.
+check reset_never_forceloads_spawn bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"; printf "spawn-kit:\n  enabled: true\n  house:\n    enabled: true\n    chest:\n      enabled: true\n" > "$SERVER_DIR/plugins/AwepeepsSpawnKit/config.yml"; run && [[ $(grep -c "forceload" "$CALLS") == 0 ]]; rm -rf "$SERVER_DIR/plugins"'
+check retired_spawn_load_env_ignored bash -c 'run SPAWN_KIT_LOAD_RADIUS=41 SPAWN_KIT_SETUP_TIMEOUT=0 && has "wait minecraft"'
 check test_kit_issuance_cleared_after_world_reset bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"; printf tombstone > "$SERVER_DIR/plugins/AwepeepsSpawnKit/issued-kits.yml"; run && [[ ! -e "$SERVER_DIR/plugins/AwepeepsSpawnKit/issued-kits.yml" ]]'
 check bluemap_purge_success_before_seed_advance bash -c 'mkdir -p "$SERVER_DIR/plugins/BlueMap"; printf 0 > "$STATE_DIR/seed-index"; run && [[ $(grep -c "bluemap purge" "$CALLS") == 3 ]] && grep -qx 1 "$STATE_DIR/seed-index"; rm -rf "$SERVER_DIR/plugins"'
 check bluemap_wrong_prefix_ack_rejected bash -c 'mkdir -p "$SERVER_DIR/plugins/BlueMap"; printf 0 > "$STATE_DIR/seed-index"; ! run BLUEMAP_ACK=prefix && grep -qx 0 "$STATE_DIR/seed-index"; rm -rf "$SERVER_DIR/plugins"'

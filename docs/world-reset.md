@@ -49,7 +49,7 @@ Configure the panel ids (from your MCSManager install) in the environment:
 SERVER_DIR=/srv/minecraft/instances/<instance-data> \
 CONTAINER=minecraft \
 STATE_DIR=/srv/minecraft/.reset-state \
-RESET_UNTIL=2026-11-28 \
+RESET_UNTIL=2026-12-31 \
 MCSM_NODE_ID=<panel-node-id> \
 MCSM_INSTANCE_UUID=<instance-id> \
   bash automation/daily-reset.sh
@@ -68,14 +68,15 @@ advanced. If BlueMap is still loading it retries within `BLUEMAP_PURGE_TIMEOUT`.
 An unacknowledged purge stops the run. See [bluemap.md](bluemap.md) for why an
 idle/updated status is not proof the old tiles are gone.
 
-## Spawn Kit preloading (test servers only)
+## Spawn Kit chunk loading (test servers only)
 
-Awepeeps-SpawnKit is test-only. When its config enables placement, the reset
-temporarily forceloads a bounded area around the configured spawn so the plugin
-can build before first login, waits up to `SPAWN_KIT_SETUP_TIMEOUT`, then removes
-that temporary ticket. It never touches an existing forceload and never leaves
-its own behind. Keep `SPAWN_KIT_LOAD_RADIUS` at least four blocks larger than the
-plugin's `search-radius`; set `SPAWN_KIT_LOAD_X`/`_Z` if the spawn is not `0,0`.
+Awepeeps-SpawnKit is test-only. From 1.2.x onward the plugin loads the chunks it
+needs with its own chunk tickets and releases them when the build finishes, so the
+reset does **not** force-load a spawn area on the plugin's behalf. A leftover
+`forceload` would be permanent. The reset clears the one-time issuance record after
+the world wipe (see "What resets, what survives"), and the plugin rebuilds the
+protected core, the starter house, and the spawn marker at the fresh world spawn
+on its own.
 
 ## Stopping automatic recovery
 

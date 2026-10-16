@@ -9,7 +9,7 @@
 # Environment (see .env.example):
 #   SERVER_DIR, CONTAINER, DATA_DEST, STATE_DIR, RESET_UNTIL, BACKUP_TIMEZONE,
 #   SEEDS_FILE, MCSM_WEB_CONTAINER, MCSM_CONFIG, MCSM_NODE_ID,
-#   MCSM_INSTANCE_UUID, BLUEMAP_MAPS, SPAWN_KIT_LOAD_*, PREWIPE_BACKUP, timeouts.
+#   MCSM_INSTANCE_UUID, BLUEMAP_MAPS, PREWIPE_BACKUP, timeouts.
 set -euo pipefail
 umask 077
 
@@ -27,10 +27,6 @@ RCON_KILL_AFTER="${RCON_KILL_AFTER:-2}"
 SHUTDOWN_TIMEOUT="${SHUTDOWN_TIMEOUT:-150}"
 BLUEMAP_PURGE_TIMEOUT="${BLUEMAP_PURGE_TIMEOUT:-120}"
 BLUEMAP_MAPS="${BLUEMAP_MAPS:-world,world_the_nether,world_the_end}"
-SPAWN_KIT_LOAD_X="${SPAWN_KIT_LOAD_X:-0}"
-SPAWN_KIT_LOAD_Z="${SPAWN_KIT_LOAD_Z:-0}"
-SPAWN_KIT_LOAD_RADIUS="${SPAWN_KIT_LOAD_RADIUS:-36}"
-SPAWN_KIT_SETUP_TIMEOUT="${SPAWN_KIT_SETUP_TIMEOUT:-90}"
 PREWIPE_BACKUP="${PREWIPE_BACKUP:-1}"
 MCSM_WEB_CONTAINER="${MCSM_WEB_CONTAINER:-mcsm-web}"
 MCSM_CONFIG="${MCSM_CONFIG:-/opt/mcsmanager/web/data/RemoteServiceConfig}"
@@ -123,19 +119,6 @@ fi
 [[ "$RCON_KILL_AFTER" =~ ^[0-9]+$ ]] || die 'RCON_KILL_AFTER must be a non-negative integer'
 { [[ "$SHUTDOWN_TIMEOUT" =~ ^[0-9]+$ ]] && (( SHUTDOWN_TIMEOUT > 0 )); } || die 'SHUTDOWN_TIMEOUT must be a positive integer'
 { [[ "$BLUEMAP_PURGE_TIMEOUT" =~ ^[0-9]+$ ]] && (( BLUEMAP_PURGE_TIMEOUT > 0 )); } || die 'BLUEMAP_PURGE_TIMEOUT must be a positive integer'
-for coordinate in "$SPAWN_KIT_LOAD_X" "$SPAWN_KIT_LOAD_Z"; do
-  [[ "$coordinate" =~ ^-?(0|[1-9][0-9]{0,7})$ ]] || die 'Spawn Kit load coordinates must be bounded integers'
-  (( coordinate >= -29999984 && coordinate <= 29999984 )) || die 'Spawn Kit load coordinates must be inside the world border'
-done
-{ [[ "$SPAWN_KIT_LOAD_RADIUS" =~ ^[0-9]+$ ]] && (( SPAWN_KIT_LOAD_RADIUS > 0 && SPAWN_KIT_LOAD_RADIUS <= 40 )); } \
-  || die 'SPAWN_KIT_LOAD_RADIUS must be an integer from 1 to 40'
-(( SPAWN_KIT_LOAD_X - SPAWN_KIT_LOAD_RADIUS >= -29999984
-  && SPAWN_KIT_LOAD_X + SPAWN_KIT_LOAD_RADIUS <= 29999984
-  && SPAWN_KIT_LOAD_Z - SPAWN_KIT_LOAD_RADIUS >= -29999984
-  && SPAWN_KIT_LOAD_Z + SPAWN_KIT_LOAD_RADIUS <= 29999984 )) \
-  || die 'Spawn Kit load area must be inside the world border'
-{ [[ "$SPAWN_KIT_SETUP_TIMEOUT" =~ ^[0-9]+$ ]] && (( SPAWN_KIT_SETUP_TIMEOUT > 0 )); } \
-  || die 'SPAWN_KIT_SETUP_TIMEOUT must be a positive integer'
 [[ "$MCSM_NODE_ID" =~ ^[A-Fa-f0-9]{1,64}$ ]] || die 'MCSM_NODE_ID must be set to the panel node id'
 [[ "$MCSM_INSTANCE_UUID" =~ ^[a-f0-9]{32}$ ]] || die 'MCSM_INSTANCE_UUID must be a 32-character hex instance id'
 [[ "$MCSM_WEB_CONTAINER" =~ ^[A-Za-z0-9_.-]+$ ]] || die 'MCSM_WEB_CONTAINER is invalid'
@@ -311,78 +294,12 @@ for dimension in minecraft:overworld minecraft:the_nether minecraft:the_end; do
     || die "sleeping percentage in $dimension did not verify as 50; seed index was not advanced"
 done
 
-# Paper 26.3 no longer keeps spawn chunks loaded. The test server may briefly
-# load its configured spawn vicinity so Spawn Kit can finish before first login.
-# Never touch an existing forceload ticket, and always remove the temporary one.
-spawn_kit_config="$server_dir/plugins/AwepeepsSpawnKit/config.yml"
-spawn_kit_enabled=false
-if [[ -f "$spawn_kit_config" && ! -L "$spawn_kit_config" ]] &&
-   awk '
-     /^spawn-kit:[[:space:]]*$/ { section=1; next }
-     section && /^[^[:space:]#]/ { exit }
-     section && /^  enabled:[[:space:]]*true([[:space:]]*(#.*)?)?$/ { enabled=1 }
-     section && /^  spawn-marker:[[:space:]]*$/ { feature="marker"; next }
-     section && /^  house:[[:space:]]*$/ { feature="house"; next }
-     section && /^    chest:[[:space:]]*$/ { feature="chest"; next }
-     section && /^  [A-Za-z0-9_-]+:/ { feature=""; next }
-     section && feature=="marker" && /^    enabled:[[:space:]]*true([[:space:]]*(#.*)?)?$/ { placement=1 }
-     section && feature=="house" && /^    enabled:[[:space:]]*true([[:space:]]*(#.*)?)?$/ { placement=1 }
-     section && feature=="chest" && /^      enabled:[[:space:]]*true([[:space:]]*(#.*)?)?$/ { placement=1 }
-     END { exit !(enabled && placement) }
-   ' "$spawn_kit_config"; then
-  spawn_kit_enabled=true
-fi
-if [[ "$spawn_kit_enabled" == true ]]; then
-  force_query="$(timeout --signal=TERM --kill-after="${RCON_KILL_AFTER}s" "${RCON_CALL_TIMEOUT}s" \
-    docker exec "$CONTAINER" rcon-cli 'execute in minecraft:overworld run forceload query' 2>/dev/null)" \
-    || die 'could not inspect existing spawn-area forceload tickets'
-  if grep -Eiq '^No (forced chunks|force loaded chunks) were found in minecraft:overworld$' <<< "$force_query"; then
-    min_x=$((SPAWN_KIT_LOAD_X - SPAWN_KIT_LOAD_RADIUS))
-    max_x=$((SPAWN_KIT_LOAD_X + SPAWN_KIT_LOAD_RADIUS))
-    min_z=$((SPAWN_KIT_LOAD_Z - SPAWN_KIT_LOAD_RADIUS))
-    max_z=$((SPAWN_KIT_LOAD_Z + SPAWN_KIT_LOAD_RADIUS))
-    force_add="$(timeout --signal=TERM --kill-after="${RCON_KILL_AFTER}s" "${RCON_CALL_TIMEOUT}s" \
-      docker exec "$CONTAINER" rcon-cli \
-      "execute in minecraft:overworld run forceload add $min_x $min_z $max_x $max_z" 2>/dev/null)" \
-      || die 'could not temporarily load the Spawn Kit search area'
-    spawn_kit_force_active=true
-    remove_spawn_kit_force() {
-      [[ "${spawn_kit_force_active:-false}" == true ]] || return 0
-      local result
-      result="$(timeout --signal=TERM --kill-after="${RCON_KILL_AFTER}s" "${RCON_CALL_TIMEOUT}s" \
-        docker exec "$CONTAINER" rcon-cli \
-        "execute in minecraft:overworld run forceload remove $min_x $min_z $max_x $max_z" 2>/dev/null)" \
-        || { log 'ERROR: could not remove temporary Spawn Kit forceload'; return 1; }
-      grep -Fq 'for force loading' <<< "$result" \
-        || { log 'ERROR: Minecraft did not confirm temporary Spawn Kit forceload removal'; return 1; }
-      spawn_kit_force_active=false
-      trap - EXIT INT TERM HUP
-    }
-    trap 'remove_spawn_kit_force || true' EXIT
-    trap 'remove_spawn_kit_force || true; exit 1' INT TERM HUP
-    grep -Fq 'to be force loaded' <<< "$force_add" \
-      || die 'Minecraft did not confirm the temporary Spawn Kit forceload'
-    log "temporarily loading spawn vicinity for up to ${SPAWN_KIT_SETUP_TIMEOUT}s"
-    setup_start=$SECONDS
-    setup_complete=false
-    while (( SECONDS - setup_start < SPAWN_KIT_SETUP_TIMEOUT )); do
-      if [[ -f "$test_kit_state_file" ]] &&
-         grep -Eq '^[[:space:]]+(setup-complete|issued):[[:space:]]*true[[:space:]]*$' "$test_kit_state_file"; then
-        setup_complete=true
-        break
-      fi
-      sleep 1
-    done
-    if [[ "$setup_complete" == true ]]; then
-      log 'Spawn Kit setup completed while its bounded spawn area was loaded'
-    else
-      log 'Spawn Kit setup did not complete within the bounded load window; check its config, terrain, and logs'
-    fi
-    remove_spawn_kit_force || die 'temporary Spawn Kit forceload cleanup failed'
-  else
-    log 'existing overworld forceload tickets found; leaving them untouched and skipping Spawn Kit preloading'
-  fi
-fi
+# AwepeepsSpawnKit 1.2.x and later load the chunks they need asynchronously with
+# plugin chunk tickets and release them when the build finishes, so the reset must
+# not force-load a spawn area itself: a temporary forceload could linger, and the
+# old bound (sized for the removed 32-block site search) no longer describes the
+# layout. The plugin rebuilds the protected core and the house at the fresh world
+# spawn on its own once the issuance record is cleared above.
 
 # Purging is an enqueue gate: BlueMap may take much longer to render the new
 # worlds, but every configured map must acknowledge a purge before seed commit.
