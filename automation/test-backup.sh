@@ -45,6 +45,8 @@ check geyser_config_and_identity_included bash -c 'tar -tzf "$ARCHIVE" | grep -q
 check geyser_unselected_data_excluded bash -c '! tar -tzf "$ARCHIVE" | grep -q plugins/Geyser-Spigot/logs'
 check retention_deduplicates_same_day bash -c 'stamp=$(basename "$ARCHIVE" .tar.gz); day=${stamp#world-}; day=${day%-*}; cp "$ARCHIVE" "$BACKUP_ROOT/daily/world-${day}-000001.tar.gz"; sleep 1; run && [[ $(find "$BACKUP_ROOT/daily" -maxdepth 1 -name "world-*.tar.gz" | wc -l) == 1 ]]'
 archive=("$BACKUP_ROOT"/daily/world-*.tar.gz); ARCHIVE="${archive[0]}"; export ARCHIVE
+check geyser_nethernet_absent_fresh_install bash -c 'rm -rf "$SERVER_DIR/plugins/Geyser-Spigot/nethernet"; rc=1; if run; then a=("$BACKUP_ROOT"/daily/world-*.tar.gz); bash "$root/automation/backup-verify.sh" "${a[0]}" >/dev/null && ! tar -tzf "${a[0]}" | grep -q plugins/Geyser-Spigot/nethernet/ && rc=0; fi; mkdir -p "$SERVER_DIR/plugins/Geyser-Spigot/nethernet"; exit $rc'
+archive=("$BACKUP_ROOT"/daily/world-*.tar.gz); ARCHIVE="${archive[0]}"; export ARCHIVE
 check save_off_failure_attempts_restore bash -c '! run FAIL_RCON=save-off && [[ -f "$SAVE_ON" ]]'
 check save_on_cleanup_failure_fails_backup bash -c '! run FAIL_RCON=save-on && [[ ! -f "$SAVE_ON" ]]'
 check partial_archive_failure_save_on bash -c 'mkdir -p "$tmp/bin"; printf "#!/bin/sh\\nexit 1\\n" > "$tmp/bin/tar"; chmod +x "$tmp/bin/tar"; ! run && [[ -f "$SAVE_ON" ]] && ! compgen -G "$BACKUP_ROOT/daily/.world-*.partial.*"; rm "$tmp/bin/tar"'

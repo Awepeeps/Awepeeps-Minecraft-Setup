@@ -65,6 +65,7 @@ an elevated (Administrator) PowerShell — run these yourself; the guide does no
 change host firewall rules for you:
 
 ```powershell
+New-NetFirewallRule -DisplayName 'Minecraft Bedrock RakNet (UDP 19132)' -Direction Inbound -Protocol UDP -LocalPort 19132 -Action Allow -Profile Private
 New-NetFirewallRule -DisplayName 'Minecraft Bedrock signaling (TCP 19132)' -Direction Inbound -Protocol TCP -LocalPort 19132 -Action Allow -Profile Private
 New-NetFirewallRule -DisplayName 'Minecraft NetherNet (UDP 19133)' -Direction Inbound -Protocol UDP -LocalPort 19133 -Action Allow -Profile Private
 ```
@@ -119,14 +120,17 @@ serves **NetherNet** alongside it. The keys are in
 - `bedrock.signaling.mode: builtin` — Geyser serves NetherNet's HTTP signaling
   itself on **TCP 19132**; `GET /v1/join` returns the server-info JSON.
 - `bedrock.signaling.builtin.advertise-addresses` — **every** address players
-  reach NetherNet on, suffixed with the media port (for example
-  `<lan-ip>:19133`, `<tailnet-ip>:19133`, `<public-ip>:19133`). Never the
-  container's internal address, and never just one candidate: a client handed an
-  address it cannot reach fails to connect.
+  reach NetherNet on, suffixed with the media port (for example a list such as
+  `["<lan-ip>:19133", "<public-ip>:19133"]`). Never the container's internal
+  address, and never just one candidate: a client handed an address it cannot
+  reach fails to connect. Geyser only falls back to the address it bound (or,
+  bound to `0.0.0.0`, every local address) while this list is empty, so an empty
+  list is only correct when every player reaches Geyser's own bound address.
 
-A NetherNet-capable Geyser build is required. Do **not** pin a preview build just
-for NetherNet; choose a supported release for your Paper and Bedrock versions
-(see [plugins.list](../plugins/plugins.list)).
+A Geyser build that supports `bedrock.signaling.builtin.advertise-addresses`
+(added upstream ~2026-10-06) is required. Do **not** pin a preview build just for
+NetherNet; choose a supported release for your Paper and Bedrock versions (see
+[plugins.list](../plugins/plugins.list)).
 
 Without HTTPS each Bedrock player sees a one-time "trust on first use" prompt
 keyed to the operator key at `plugins/Geyser-Spigot/nethernet/identity.pem`.
@@ -134,11 +138,19 @@ Back that file up: losing it re-prompts every player. It is a private key, so
 keep it out of Git (`.gitignore` covers `*.pem`); `automation/backup.sh` archives
 it when the default `PLUGIN_DATA_PATHS` is unchanged.
 
-With HTTPS signaling configured Geyser **rejects** plain-HTTP signaling, so
-players must switch from raw addresses to the TLS hostname — a migration, not a
-drop-in. HTTPS does not change the UDP media candidate. A normal TLS/HTTP reverse
-proxy cannot carry the raw game TCP/UDP traffic anyway; public NetherNet access
-needs direct router forwards.
+With a TLS certificate configured, built-in signaling still binds the single TCP
+listener on the Bedrock port and distinguishes TLS from plaintext by the first
+bytes, but **plaintext signaling requests are refused**: they are answered with
+HTTP `426 Upgrade Required`, so players must switch from raw addresses to the TLS
+hostname — a migration, not a drop-in. The refusal lives in the signaling library
+(Netty's optional-TLS handler plus a `requires-tls` default of `true` that Geyser
+never turns off), not in the config file, so the config comment does not decide
+it: Geyser corrected its own comment to "When configured, HTTP will be rejected"
+on 2026-10-14, and the pinned Geyser preview build's older comment ("Serves
+signaling over HTTPS as well as HTTP, on the same port") is stale. HTTPS does not
+change the UDP media candidate. A normal TLS/HTTP reverse proxy cannot carry the
+raw game TCP/UDP traffic anyway; public NetherNet access needs direct router
+forwards.
 
 Verify:
 
