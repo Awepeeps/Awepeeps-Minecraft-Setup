@@ -26,8 +26,9 @@ fwhitelist add <bedrock-gamertag>
 ```
 
 `whitelist add` also works once Floodgate links the Bedrock identity, but
-`fwhitelist` is the correct command. They join `<SERVER_HOST>`, UDP port 19132.
-See [bedrock.md](bedrock.md).
+`fwhitelist` is the correct command. They join `<SERVER_HOST>`; older clients use
+UDP 19132 (RakNet) and Bedrock 26.40+ clients use NetherNet. See
+[bedrock.md](bedrock.md).
 
 ## Removing a player
 

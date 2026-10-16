@@ -87,10 +87,12 @@ automation reapplies and verifies the rule after it creates a new world.
 
 ## Network and service exposure
 
-The Java server's default port is TCP 25565. Geyser's common Bedrock listener is
-UDP 19132; confirm the plugin configuration and forward UDP through the host's
-network as needed. Leave the Java `server-ip` property unset inside the
-container unless the selected deployment requires a specific bind address.
+The Java server's default port is TCP 25565. Geyser's Bedrock listener uses UDP
+19132 for RakNet and, for Bedrock 26.40+, NetherNet (TCP 19132 signaling plus
+UDP 19133 media); confirm the plugin configuration and forward those ports
+through the host's network as needed. Leave the Java `server-ip` property unset
+inside the container unless the selected deployment requires a specific bind
+address.
 MCSManager panel and map exposure are host or reverse-proxy choices; the public
 template does not authorize exposing management services to the internet. See
 [Bedrock access](bedrock.md) and [BlueMap](bluemap.md).

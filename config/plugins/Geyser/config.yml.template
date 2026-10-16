@@ -8,12 +8,29 @@
 #
 # TODO: confirm every key name and the full generated file against your pinned
 # Geyser version (https://geysermc.org/wiki/geyser/configuration/). The values
-# below are the ones that matter for a whitelist-only, Floodgate-backed server.
+# below are the ones that matter for a whitelist-only, Floodgate-backed server,
+# and the NetherNet keys require a NetherNet-capable Geyser build.
 bedrock:
-  # UDP port Bedrock clients connect to. Forward this port at the router.
+  # RakNet UDP port older Bedrock clients connect to. Forward this port.
   port: 19132
   # Bind all interfaces inside the container; leave address unset/0.0.0.0.
   address: 0.0.0.0
+  # NetherNet (Bedrock 26.40+, and the only transport once RakNet is removed in
+  # 26.60) runs alongside RakNet. `both` keeps older clients working;
+  # `webrtc-port` must differ from the RakNet port (19132) under `both`.
+  webrtc-port: 19133
+  transport: both
+  signaling:
+    # Geyser serves NetherNet's HTTP signaling itself on TCP 19132.
+    mode: builtin
+    builtin:
+      # Every address a player reaches NetherNet on, suffixed with the media
+      # port; never the container's internal address. A client handed a
+      # candidate it cannot reach fails to connect, so list every address
+      # (LAN, VPN/tailnet, public). Replace the placeholders below.
+      advertise-addresses:
+        - <lan-ip>:19133
+        - <tailnet-ip>:19133
 remote:
   # The Java server Geyser translates to, inside the Docker network.
   address: 127.0.0.1

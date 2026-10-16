@@ -47,12 +47,15 @@ non-empty region data for every dimension, and then extracts. This proves archiv
 integrity and safe extraction; it is **not** a boot test.
 
 The default plugin-data scope includes the BlueMap Compass and Spawn Kit data
-directories, plus only `plugins/Essentials/config.yml` and
-`plugins/Essentials/userdata/`. The main config is included; other EssentialsX
-files and directories such as kits, logs, and other configuration files are
-excluded. Per-player state may still contain economy or location data. Keep
-`.env`'s `PLUGIN_DATA_DIRS` and `PLUGIN_DATA_PATHS` aligned with
-`backup-verify.sh`; the verifier refuses unexpected plugin files.
+directories, plus only `plugins/Essentials/config.yml`,
+`plugins/Essentials/userdata/`, Geyser's `plugins/Geyser-Spigot/config.yml`, and
+Geyser's `plugins/Geyser-Spigot/nethernet/` directory. The main EssentialsX
+config is included; other EssentialsX files and directories such as kits, logs,
+and other configuration files are excluded. Per-player state may still contain
+economy or location data. Geyser's `nethernet/identity.pem` operator key is a
+private key: keep it in the backup (losing it re-prompts every Bedrock player)
+but never in Git. Keep `.env`'s `PLUGIN_DATA_DIRS` and `PLUGIN_DATA_PATHS` aligned
+with `backup-verify.sh`; the verifier refuses unexpected plugin files.
 
 ## Scheduling
 
