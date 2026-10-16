@@ -93,6 +93,14 @@ The org repository is canonical: `Awepeeps/Awepeeps-Minecraft-Setup`.
 
 Before every push, scan the whole tree for secrets and instance values (see the
 CI secret scan and the checklist in [`docs/updating-plugins.md`](docs/updating-plugins.md)).
+For the full workflow, environment-variable conventions, and the generic-template
+rules, read [`CONTRIBUTING.md`](CONTRIBUTING.md). Report security issues through
+the private process in [`SECURITY.md`](SECURITY.md), never in a public issue.
+
+## License
+
+Released under the [MIT License](LICENSE). Copyright (c) 2026 Awepeeps
+contributors.
 
 ## Working in this repository
 
