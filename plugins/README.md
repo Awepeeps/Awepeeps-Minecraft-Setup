@@ -23,7 +23,7 @@ verification.
 | [ViaBackwards](https://github.com/ViaVersion/ViaBackwards) | Lets older Java clients (including Geyser's emulation) join a newer server. Keep matching ViaVersion. | No |
 | [LuckPerms](https://luckperms.net/) | Permissions. Grants the minimal permission instead of opping friends. | No |
 | [EssentialsX Core](https://github.com/EssentialsX/Essentials) | Selected for nicknames, moderation commands, and core utilities. The public manifest pin remains unfilled; see [`docs/plugins.md`](../docs/plugins.md) for status and validation scope, and [`nicknames-and-permissions.md`](../docs/nicknames-and-permissions.md) for permission policy. | No |
-| [FreedomChat](https://github.com/ocelotpotpie/FreedomChat) | Optional chat compatibility layer, selected in the reference staging stack. If used, settings are release-specific; outgoing signed chat remains reportable. It is not a chat-report protection feature. | Optional; public pin unfilled |
+| [FreedomChat](https://github.com/ocelotpotpie/FreedomChat) | Optional chat compatibility layer. If used, settings are release-specific; outgoing signed chat remains reportable. It is not a chat-report protection feature. | Optional; public pin unfilled |
 | [BlueMap](https://bluemap.bluecolored.de/) | Web map. | No |
 | [Geyser](https://geysermc.org/) | Translates Bedrock clients to Java. Check for a stable release that supports your Paper version. | No |
 | [Floodgate](https://geysermc.org/) | Lets Bedrock players in without a Java account. | No |

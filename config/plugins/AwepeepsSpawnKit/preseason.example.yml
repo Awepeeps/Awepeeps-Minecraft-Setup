@@ -12,8 +12,8 @@ spawn-kit:
   starts-on: "TODO-YYYY-MM-DD"
   expires-on: "TODO-YYYY-MM-DD"
   timezone: "TODO/Timezone"
-  # The guarded reset must temporarily load at least four blocks more than this
-  # search radius (SPAWN_KIT_LOAD_RADIUS). See docs/world-reset.md.
+  # The plugin loads the chunks it needs with its own chunk tickets; the reset
+  # does not force-load a spawn area. See docs/world-reset.md.
   search-radius: 32
   spawn-marker:
     enabled: true

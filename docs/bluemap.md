@@ -9,11 +9,10 @@ behind a reverse proxy with TLS) until you have decided to expose it.
   confirms a Java Edition license, and allows BlueMap to download and use
   Mojang's client resources for map textures. BlueMap cannot render without
   those resources. Review the statement BlueMap prints before accepting it.
-- `plugins/BlueMap/webapp.conf`: port **8100**, and the reference instance uses
-  hires/lowres slider **min 0 / default 160 / max 160** with
-  `max-zoom-distance: 512`. The slider values are the reference values; confirm
-  the exact key names against your BlueMap version's generated file (**TODO** —
-  see `config/plugins/BlueMap/webapp.conf.template`).
+- `plugins/BlueMap/webapp.conf`: port **8100**, with hires/lowres slider
+  **min 0 / default 160 / max 160** and `max-zoom-distance: 512`. These are
+  template values; confirm the exact key names against your BlueMap version's
+  generated file (**TODO** — see `config/plugins/BlueMap/webapp.conf.template`).
 - `max-zoom-distance: 512` matches player `view-distance 10`; it limits how far
   the 3D viewer can zoom out. It does not change Minecraft chunk delivery.
 - Resolve the generated `webapp.conf` placeholders (`${webroot}`, `${logfile}`)

@@ -6,7 +6,7 @@
 # sliders only affect browser draw/detail distance; they do not restrict explored
 # terrain or Minecraft chunk delivery.
 #
-# The values below are the ones the reference instance uses. TODO: confirm the
+# The values below are template defaults. TODO: confirm the
 # exact key names and nesting against your BlueMap version's generated
 # webapp.conf or the official reference
 # (https://bluemap.bluecolored.de/wiki/configs/Webapp.html).

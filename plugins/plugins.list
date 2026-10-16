@@ -25,11 +25,11 @@ LuckPerms|LuckPerms official download|5.5.87|TODO_RELEASE_JAR_URL|TODO_64_HEX_SH
 # EssentialsX|EssentialsX official GitHub release|TODO_VERSION|TODO_RELEASE_JAR_URL|TODO_64_HEX_SHA256
 BlueMap|Modrinth|5.29-paper|TODO_RELEASE_JAR_URL|TODO_64_HEX_SHA256
 # Geyser: the stable 2.11.3 release fails on Paper 26.3. Check for a stable
-# release that supports your Paper version; the reference instance used a 2.12.0
-# preview build. Prefer a stable release when one supports your version.
-# RakNet removal is planned for Bedrock 26.60 (2026-10-27), so the pinned build
-# must support NetherNet (Geyser's bedrock.transport/webrtc-port keys). Do not
-# pin a preview build just for NetherNet; use a supported release for your
+# release that supports your Paper version; prefer a stable release when one
+# supports your version. A preview build may be needed when no stable release
+# does. RakNet removal is planned for Bedrock 26.60 (2026-10-27), so the pinned
+# build must support NetherNet (Geyser's bedrock.transport/webrtc-port keys). Do
+# not pin a preview build just for NetherNet; use a supported release for your
 # versions.
 Geyser|GeyserMC download (check for a stable release on your Paper version)|TODO_VERSION|TODO_DIRECT_JAR_URL|TODO_64_HEX_SHA256
 Floodgate|GeyserMC download|2.2.5|TODO_DIRECT_JAR_URL|TODO_64_HEX_SHA256
@@ -40,8 +40,8 @@ Floodgate|GeyserMC download|2.2.5|TODO_DIRECT_JAR_URL|TODO_64_HEX_SHA256
 # --- Awepeeps plugins (built from a pinned source commit) --------------------
 # Replace TODO_COMMIT with a full 40-character commit and fill the sha256 by
 # running the matching automation/build-*.sh and reading its verified output.
-ChestCleaner|Awepeeps-ChestCleaner source commit TODO_COMMIT|2.4.5-awepeeps.1|https://github.com/Awepeeps/Awepeeps-ChestCleaner/tree/TODO_COMMIT|TODO_64_HEX_SHA256
-AwepeepsBlueMapCompass|Awepeeps-BlueMap-Compass source commit TODO_COMMIT|1.4.1-awepeeps.8|https://github.com/Awepeeps/Awepeeps-BlueMap-Compass/tree/TODO_COMMIT|TODO_64_HEX_SHA256
+ChestCleaner|Awepeeps-ChestCleaner source commit TODO_COMMIT|2.4.5-awepeeps.2|https://github.com/Awepeeps/Awepeeps-ChestCleaner/tree/TODO_COMMIT|TODO_64_HEX_SHA256
+AwepeepsBlueMapCompass|Awepeeps-BlueMap-Compass source commit TODO_COMMIT|1.4.1-awepeeps.9|https://github.com/Awepeeps/Awepeeps-BlueMap-Compass/tree/TODO_COMMIT|TODO_64_HEX_SHA256
 
 # Legacy note: Awepeeps-Whitelist-Gate is retired from the recommended setup.
 # Manual whitelist approval is documented in docs/whitelist.md.

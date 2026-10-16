@@ -211,8 +211,8 @@ fwhitelist add <bedrock-gamertag>
 5. Check the console after each boot for plugin load errors.
 
 Geyser note: the stable 2.11.3 release fails on Paper 26.3. **Check for a stable
-release that supports your Paper version**; the reference instance used a 2.12.0
-preview build. Prefer a stable release when one supports your version.
+release that supports your Paper version**; prefer a stable release when one
+supports your version. A preview build may be needed when no stable release does.
 
 ## 9. Apply plugin configs
 
