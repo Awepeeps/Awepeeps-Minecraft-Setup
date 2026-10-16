@@ -25,8 +25,9 @@ Paper version accepts it because **ViaBackwards** is installed; newer Java
 clients are covered by ViaVersion. Do not remove either Via plugin without
 checking every client class. If Geyser's stable release fails to load on your
 Paper version, **check for a stable release that supports your Paper version**;
-the reference instance used a 2.12.0 preview build because stable 2.11.3 failed on
-Paper 26.3.
+prefer a stable release when one supports your version. A preview build may be
+needed when no stable release supports your version — the stable 2.11.3 release,
+for example, failed on Paper 26.3.
 
 Chat: Bedrock players do not carry a signed Java chat profile, so the server
 keeps `enforce-secure-profile=false`. **Trade-off:** this relaxes signed-chat

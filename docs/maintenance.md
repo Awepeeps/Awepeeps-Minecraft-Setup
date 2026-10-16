@@ -23,18 +23,20 @@ If the lock cannot be acquired, the job must stop without changing the instance.
 
 ## Daily reset and backup gates
 
-Use the instance's configured Eastern time zone, including daylight-saving
-transitions, for the daily schedule:
+Use the instance's configured time zone (including its daylight-saving
+transitions) for the daily schedule. The times below are **examples**; choose your
+own and keep them in private deployment configuration:
 
-- At **03:45**, take an early backup for the daily test/reset window. It must
-  complete and pass its configured integrity checks before the test begins.
-- At **04:00**, the test-world reset first takes its own verified pre-wipe
-  backup. A missing, failed, incomplete, or unverifiable backup is a hard
-  precondition failure: stop the run and do not wipe or reset anything.
-- At **05:45**, take the daily live-season backup once the configured cutover
-  date has arrived. Before that date this job does nothing. Date gates switch
-  the backup schedule and expire the test wipe; they do not perform a world
-  cutover, restore, or season launch automatically.
+- At **an early time (example: 03:45)**, take a backup for the daily test/reset
+  window. It must complete and pass its configured integrity checks before the
+  test begins.
+- At **the reset time (example: 04:00)**, the test-world reset first takes its own
+  verified pre-wipe backup. A missing, failed, incomplete, or unverifiable backup
+  is a hard precondition failure: stop the run and do not wipe or reset anything.
+- At **the live-backup time (example: 05:45)**, take the daily live-season backup
+  once the configured cutover date has arrived. Before that date this job does
+  nothing. Date gates switch the backup schedule and expire the test wipe; they do
+  not perform a world cutover, restore, or season launch automatically.
 
 During a disposable-world rehearsal, run the installed backup and reset services
 with explicit authorization to wipe that sandbox. Verify a fresh world seed,
