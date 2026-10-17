@@ -24,6 +24,7 @@ LuckPerms|LuckPerms official download|5.5.87|TODO_RELEASE_JAR_URL|TODO_64_HEX_SH
 # official jar URL and measured SHA-256; do not activate this placeholder entry.
 # EssentialsX|EssentialsX official GitHub release|TODO_VERSION|TODO_RELEASE_JAR_URL|TODO_64_HEX_SHA256
 BlueMap|Modrinth|5.29-paper|TODO_RELEASE_JAR_URL|TODO_64_HEX_SHA256
+BlueMapOfflinePlayerMarkers|TechnicJelle GitHub release|3.3|https://github.com/TechnicJelle/BlueMapOfflinePlayerMarkers/releases/download/v3.3/BlueMapOfflinePlayerMarkers-3.3.jar|59b42bf0cf30f4a7baffa8de060b159e1f1813c4b0969594de664e126339d299
 # Geyser: the stable 2.11.3 release fails on Paper 26.3. Check for a stable
 # release that supports your Paper version; prefer a stable release when one
 # supports your version. A preview build may be needed when no stable release

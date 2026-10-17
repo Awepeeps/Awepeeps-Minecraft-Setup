@@ -32,12 +32,16 @@ Never merge the private repository's history into this one.
   owner-reviewed manual approval for new Java and Bedrock players.
 - Bedrock cross-play via Geyser + Floodgate.
 - ViaVersion + ViaBackwards, LuckPerms, EssentialsX Core, BlueMap,
-  Awepeeps-ChestCleaner, Awepeeps-BlueMap-Compass, and (test-only)
-  Awepeeps-SpawnKit are the selected portable stack. EssentialsX Core is
+  BlueMap Offline Player Markers, Awepeeps-ChestCleaner,
+  Awepeeps-BlueMap-Compass, and (test-only) Awepeeps-SpawnKit are the selected
+  portable stack. BlueMap terrain can be held between scheduled render batches;
+  live player and marker layers remain separate. EssentialsX Core is
   selected, but its manifest entry stays an inactive placeholder until you
-  validate a release for your Paper build and measure its jar. The template
-  manifests intentionally keep exact URLs and hashes as TODOs; they are not a
-  ready-to-run copy of a private staging server's pins. FreedomChat is optional
+  validate a release for your Paper build and measure its jar. Most manifest
+  entries are TODOs; the measured public Offline Player Markers pin is a
+  reference artifact, not evidence of compatibility with a particular Paper
+  and BlueMap combination. The manifests are not a ready-to-run copy of a
+  private staging server's pins. FreedomChat is optional
   and its release-specific chat settings must be reviewed separately.
 - Plugins pinned by exact version or source commit **plus the SHA-256 of the jar**,
   and verified before install.

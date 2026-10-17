@@ -1,0 +1,13 @@
+# BlueMap Offline Player Markers v3.3 — merge into the generated config.
+# Destination on the server:
+# <instance-data>/plugins/BlueMapOfflinePlayerMarkers/config.yml
+# These are upstream default values. The separate Offline Players marker set
+# displays each eligible offline player's last saved position and last-seen time.
+# ExpireTimeInHours: 0 means no age cutoff. Player identities and positions are
+# personal data; keep server data and backups private.
+Toggleable: true
+DefaultHidden: false
+ExpireTimeInHours: 0
+HiddenGameModes:
+  - spectator
+HideBannedPlayers: true

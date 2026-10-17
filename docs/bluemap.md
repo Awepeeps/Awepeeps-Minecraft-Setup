@@ -51,6 +51,58 @@ nearby time can qualify a chunk, while client visibility and render timing are
 separate. Changing it requires a map re-render. See the
 [official map configuration reference](https://bluemap.bluecolored.de/wiki/configs/Maps.html).
 
+## Scheduled terrain batches
+
+BlueMap watches changed region files and queues terrain updates. To batch terrain
+work, freeze every map before exposing the viewer, including each configured
+dimension. The native freeze state persists across a server restart. For example,
+from the server console:
+
+```text
+/bluemap maps
+/bluemap freeze world
+/bluemap freeze world_the_nether
+/bluemap freeze world_the_end
+```
+
+Use the actual map IDs returned by `/bluemap maps`. Freezing each map is the
+update gate: relying on the periodic full-update interval alone would leave its
+region watcher active.
+
+A batch runs the native `/bluemap update <map-id>` command once for each map.
+This updates changed terrain and saves the world first. Do not substitute
+`force-update`, which redraws even unchanged terrain. Before starting a batch,
+check `/bluemap` and `/bluemap tasks`; run only when the render queue is idle and
+do not overlap batches. Poll both status commands until the queue is idle again.
+Bound each scheduled service to 900 seconds. If it times out or BlueMap reports a
+render failure, record the failure and leave the map frozen for the next batch.
+
+Use a host-side systemd user timer, with `Persistent=false`, to invoke the native
+commands through the server's existing authenticated console or RCON path. For a
+disposable test world, schedule hourly at minute 10 (`OnCalendar=*-*-* *:10:00`).
+For a live world, schedule once daily before that host's morning backup. Keep
+backup success independent of rendering: a sequential pre-backup wrapper can
+wait for a bounded batch, warn on failure and still back up primary data. Do not
+let a failed render skip that backup. Do not put RCON credentials in unit
+files or command lines.
+
+The live viewer's terrain is usually from the latest completed batch, so its age
+varies from near zero to about 24 hours plus render time. This is an operating
+cadence, not a strict freshness guarantee: a missed, timed-out, or failed batch
+can leave older terrain visible. Live player markers, Compass waypoints, and
+offline-player markers remain separate from the terrain schedule.
+
+The guarded world-reset workflow purges each map's generated tiles. A frozen map
+stays blank for terrain until the next scheduled `/bluemap update`; this is
+expected. Checkpoints after restore matter too: BlueMap stores freeze state in
+`<BLUEMAP_DATA>/pluginState.json`, where `<BLUEMAP_DATA>` is the path selected by
+BlueMap's `core.data` setting, relative to the instance data directory. The
+stock Setup backup allowlist covers plugin paths only and does not include this
+state file. A deployment adopting freeze scheduling must preserve this one file
+in its private backup and verifier, or re-freeze every map after restore and
+before exposing the viewer. Do not put its contents in Git; it can include
+private marker and freeze state.
+
 ## Spawn view after a world reset
 
 Each generated map opens the viewer at its `start-pos`, which defaults to
@@ -100,31 +152,58 @@ and allow a rebuild. The guarded reset script queues a purge for every configure
 map and requires BlueMap's acknowledgment before it advances the seed index
 (rendering itself continues in the background). See [world-reset.md](world-reset.md).
 
-## Markers and waypoints
+## Player positions, markers, and waypoints
 
-Two kinds of markers:
+Terrain batches do not batch the live player and marker layers. BlueMap's online
+player positions, shared Compass waypoints, and offline-player markers continue
+to be visible as those features update.
 
-- **Administrator-managed** static markers, configured by hand and kept out of
-  player control.
-- **Waypoints** published by Awepeeps-BlueMap-Compass. A player sneak-right-clicks
-  an allowed block (default: lodestone or banner) with any compass to create or
-  remove a waypoint. Nothing teleports the player and no durability is used; the
-  in-game indicator is visible only while holding a compass.
+BlueMap Offline Player Markers is an upstream Paper plugin that adds a separate,
+toggleable marker set for players at their last saved logout position. It shows
+the player's name and last-seen time. Its defaults keep the marker set visible,
+hide spectators and banned players, and do not expire old markers (`0` hours is
+unlimited). Review these defaults and the
+[upstream README](https://github.com/TechnicJelle/BlueMapOfflinePlayerMarkers)
+before enabling it. Its upstream release describes Paper 1.13+ compatibility.
+The 3.x release line added and fixed the newer Minecraft player-data layout; v3.3
+includes a fix to skip zero UUID data. Verify the chosen release against your
+exact Paper and BlueMap builds.
 
-BlueMap's built-in `/bluemap` commands do not create persistent markers, and the
-installed plugin set has **no marker-command addon**. Do not add guessed
-permission denials — they would block nothing. If a marker-command addon is later
-introduced, verify its documented create/edit/delete permission nodes and deny
-them to ordinary players while keeping admin access.
+The addon reads Minecraft player-data files for the saved location and writes a
+derived player-name cache in its own config directory. Minecraft world player
+data is the source of truth for positions; if retaining addon configuration,
+back up only `plugins/BlueMapOfflinePlayerMarkers/config.yml`. The name cache is
+derived and need not be backed up. Treat world data, addon configuration, and map
+output as private; do not commit player identities, positions, or server data.
+The upstream plugin performs update checks and uses bStats usage telemetry.
+Marker skins and fallback player-name resolution use BlueMap's configured skin
+provider and may fall back to Mojang. Review the provider and metrics policies
+for your deployment before enabling it.
+
+Persistent POI markers are limited to administrator-managed static markers and
+waypoints published by Awepeeps-BlueMap-Compass. A player sneak-right-clicks an
+allowed block (default: lodestone or banner) with any compass to create or remove
+a waypoint. Nothing teleports the player and no durability is used; the in-game
+indicator is visible only while holding a compass.
+
+BlueMap's built-in `/bluemap` commands do not create persistent markers. Offline
+Player Markers adds display-only offline-player markers and no edit commands.
+Do not add guessed permission denials — they would block nothing. If a separate
+marker-command addon is introduced, verify its documented create/edit/delete
+permission nodes and deny them to ordinary players while keeping admin access.
 
 ## Placeholders in exported marker metadata
 
-Keep coordinates and player identities out of any exported marker metadata.
-Static marker sets should describe a location, not a person. Player positions
-are a separate live display feature.
+Do not export marker metadata, player identities, or coordinates from this
+private server into the public setup repository. The configured viewer may
+intentionally show static POIs and player positions to its authorized audience;
+that runtime map output remains private. Static markers should describe a
+location, not a person.
 
 ## References
 
+- [BlueMap core settings](https://bluemap.bluecolored.de/wiki/configs/Core.html)
 - [BlueMap map settings](https://bluemap.bluecolored.de/wiki/configs/Maps.html)
 - [BlueMap commands](https://bluemap.bluecolored.de/wiki/getting-started/Commands.html)
 - [BlueMap markers](https://bluemap.bluecolored.de/wiki/customization/Markers.html)
+- [BlueMap Offline Player Markers upstream releases](https://github.com/TechnicJelle/BlueMapOfflinePlayerMarkers/releases)
