@@ -19,7 +19,14 @@ updateMessage: false
 #   /sortingadmin sortingSound active true
 #   /sortingadmin chatNotification true
 #   /sortingadmin refill false
+#
+# interaction-cooldown-ms debounces repeated interactions per player and per
+# action kind. Bedrock clients (Switch and other consoles via Geyser/Floodgate)
+# can deliver one press as two click events, which would otherwise run a
+# tap-triggered sort twice. 0 disables the debounce; values outside 0-5000 fall
+# back to the default 750. See docs/plugins.md.
 
+interaction-cooldown-ms: 750
 default:
   clicksort: false
   autosort: false
