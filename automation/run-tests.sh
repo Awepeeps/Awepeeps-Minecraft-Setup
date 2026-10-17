@@ -18,6 +18,7 @@ run bash "$HERE/test-daily-reset.sh"
 run python3 "$HERE/test-maintenance-status.py"
 run python3 "$HERE/test-snapshot-policy.py"
 run python3 "$HERE/test-season-end.py"
+run python3 "$HERE/test-bluemap-spawn-view.py"
 
 if (( status != 0 )); then
   printf '\nOne or more test suites failed.\n' >&2

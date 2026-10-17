@@ -27,6 +27,7 @@ RCON_KILL_AFTER="${RCON_KILL_AFTER:-2}"
 SHUTDOWN_TIMEOUT="${SHUTDOWN_TIMEOUT:-150}"
 BLUEMAP_PURGE_TIMEOUT="${BLUEMAP_PURGE_TIMEOUT:-120}"
 BLUEMAP_MAPS="${BLUEMAP_MAPS:-world,world_the_nether,world_the_end}"
+BLUEMAP_SPAWN_VIEW_TIMEOUT="${BLUEMAP_SPAWN_VIEW_TIMEOUT:-60}"
 PREWIPE_BACKUP="${PREWIPE_BACKUP:-1}"
 MCSM_WEB_CONTAINER="${MCSM_WEB_CONTAINER:-mcsm-web}"
 MCSM_CONFIG="${MCSM_CONFIG:-/opt/mcsmanager/web/data/RemoteServiceConfig}"
@@ -119,6 +120,7 @@ fi
 [[ "$RCON_KILL_AFTER" =~ ^[0-9]+$ ]] || die 'RCON_KILL_AFTER must be a non-negative integer'
 { [[ "$SHUTDOWN_TIMEOUT" =~ ^[0-9]+$ ]] && (( SHUTDOWN_TIMEOUT > 0 )); } || die 'SHUTDOWN_TIMEOUT must be a positive integer'
 { [[ "$BLUEMAP_PURGE_TIMEOUT" =~ ^[0-9]+$ ]] && (( BLUEMAP_PURGE_TIMEOUT > 0 )); } || die 'BLUEMAP_PURGE_TIMEOUT must be a positive integer'
+{ [[ "$BLUEMAP_SPAWN_VIEW_TIMEOUT" =~ ^[0-9]+$ ]] && (( BLUEMAP_SPAWN_VIEW_TIMEOUT > 0 )); } || die 'BLUEMAP_SPAWN_VIEW_TIMEOUT must be a positive integer'
 [[ "$MCSM_NODE_ID" =~ ^[A-Fa-f0-9]{1,64}$ ]] || die 'MCSM_NODE_ID must be set to the panel node id'
 [[ "$MCSM_INSTANCE_UUID" =~ ^[a-f0-9]{32}$ ]] || die 'MCSM_INSTANCE_UUID must be a 32-character hex instance id'
 [[ "$MCSM_WEB_CONTAINER" =~ ^[A-Za-z0-9_.-]+$ ]] || die 'MCSM_WEB_CONTAINER is invalid'
@@ -330,6 +332,24 @@ if [[ "$bluemap_installed" == true ]]; then
       die "BlueMap did not confirm purge for map $map_id; seed index was not advanced"
     done
   done
+  # The map view is cosmetic: re-point each map at the fresh world spawn and
+  # enforce the inhabited-time policy, then reload BlueMap so the settings take
+  # effect without a restart. This runs after every configured map acknowledged
+  # its purge (so BlueMap is loaded). Any failure warns only and must never block
+  # seed rotation.
+  if [[ -f "$(dirname -- "$0")/bluemap-spawn-view.py" && ! -L "$(dirname -- "$0")/bluemap-spawn-view.py" ]] \
+     && timeout --signal=TERM --kill-after="${RCON_KILL_AFTER}s" "${BLUEMAP_SPAWN_VIEW_TIMEOUT}s" \
+          python3 "$(dirname -- "$0")/bluemap-spawn-view.py" --apply --server-dir "$server_dir"; then
+    log 'BlueMap map start-pos and inhabited-time settings updated for the fresh world'
+  else
+    log 'WARNING: BlueMap spawn-view update failed; start-pos may still point at 0,0'
+  fi
+  if timeout --signal=TERM --kill-after="${RCON_KILL_AFTER}s" "${RCON_CALL_TIMEOUT}s" \
+       docker exec "$CONTAINER" rcon-cli 'bluemap reload' >/dev/null 2>&1; then
+    log 'BlueMap reloaded to apply the fresh-world map settings'
+  else
+    log 'WARNING: BlueMap reload failed; fresh map settings apply at the next reload or restart'
+  fi
 fi
 
 if (( ${#seeds[@]} > 0 )); then

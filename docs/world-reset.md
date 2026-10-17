@@ -68,6 +68,13 @@ advanced. If BlueMap is still loading it retries within `BLUEMAP_PURGE_TIMEOUT`.
 An unacknowledged purge stops the run. See [bluemap.md](bluemap.md) for why an
 idle/updated status is not proof the old tiles are gone.
 
+After every configured map acknowledges its purge (so BlueMap is loaded), the
+reset re-points each map at the fresh world spawn and enforces the
+inhabited-time policy with `automation/bluemap-spawn-view.py --apply`, then runs
+`bluemap reload` so the settings apply without a restart. That step is cosmetic
+and **warn-only**: a failure logs a warning and never blocks the seed rotation.
+See [bluemap.md](bluemap.md) for what it reads and how it fails closed.
+
 ## Spawn Kit chunk loading (test servers only)
 
 Awepeeps-SpawnKit is test-only. From 1.2.x onward the plugin loads the chunks it

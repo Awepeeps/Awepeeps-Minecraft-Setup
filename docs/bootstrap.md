@@ -232,7 +232,9 @@ on first boot (do not replace the whole file):
 
 - BlueMap: `core.conf` (accept the download), `webapp.conf` (port `8100`, slider
   `0/160/160`, `max-zoom-distance: 512`), and each map file
-  (`min-inhabited-time: 30`). See [bluemap.md](bluemap.md).
+  (`min-inhabited-time: 1200`; see [bluemap.md](bluemap.md) for why 1200 rather
+  than a small value). The reset re-points each map's `start-pos` at the fresh
+  world spawn on its own (`automation/bluemap-spawn-view.py`).
 - ChestCleaner: `config.yml`, then run the one-time command checklist in
   `config/plugins/LuckPerms/README.md` and set the cleaning item in game with a
   brush and `/cleaningitem set`.
