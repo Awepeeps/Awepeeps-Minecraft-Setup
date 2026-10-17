@@ -53,8 +53,9 @@ those scripts; it is not authoritative for the Minecraft container.
 
 The portable [server properties template](../config/server.properties.template)
 sets `gamemode=survival`, `difficulty=normal`, `pvp=true`, `view-distance=10`,
-`max-players=20`, `level-name=world`, an empty `level-seed`,
-`spawn-protection=2`, and the default Java port `25565`. These are the current
+`simulation-distance=8`, `max-players=20`, `level-name=world`, an empty
+`level-seed`, `spawn-protection=2`, and the default Java port `25565`. These are
+the current
 public template defaults, not a copy of a private instance's settings. The empty
 seed creates a fresh random world; never publish a real seed or coordinates.
 The template also sets `enable-command-block=false` and

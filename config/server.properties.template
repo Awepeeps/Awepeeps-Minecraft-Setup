@@ -33,6 +33,12 @@ difficulty=normal
 pvp=true
 spawn-protection=2
 view-distance=10
+# Simulation distance is independent of view-distance. Crops, mob spawning and
+# redstone only tick within this many chunks of a player (~128 blocks at 8), and
+# BlueMap's inhabited-time filter counts every chunk within it, so it also bounds
+# the explored-terrain radius the map draws around where players spent time. Set
+# this in the instance env (SIMULATION_DISTANCE) too; see docs/bluemap.md.
+simulation-distance=8
 max-players=20
 
 # --- Network -----------------------------------------------------------------
