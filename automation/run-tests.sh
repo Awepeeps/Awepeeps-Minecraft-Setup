@@ -15,6 +15,7 @@ run() {
 run bash "$HERE/test-backup.sh"
 run bash "$HERE/test-install-plugins.sh"
 run bash "$HERE/test-daily-reset.sh"
+run bash "$HERE/test-whitelist-check.sh"
 run python3 "$HERE/test-maintenance-status.py"
 run python3 "$HERE/test-snapshot-policy.py"
 run python3 "$HERE/test-season-end.py"

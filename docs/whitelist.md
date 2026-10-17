@@ -30,12 +30,46 @@ fwhitelist add <bedrock-gamertag>
 UDP 19132 (RakNet) and Bedrock 26.40+ clients use NetherNet. See
 [bedrock.md](bedrock.md).
 
+If the gamertag lookup fails with **"Unable to find user in our cache"**, add the
+player by XUID instead. The GeyserMC global API only knows players it has already
+seen, while a Floodgate UUID is derived from the XUID alone. Look up the player's
+decimal XUID, write it as 16 hex digits, and add the Floodgate UUID
+`00000000-0000-0000-XXXX-XXXXXXXXXXXX` where `XXXX-XXXXXXXXXXXX` are those 16
+hex digits:
+
+```text
+fwhitelist add 00000000-0000-0000-XXXX-XXXXXXXXXXXX
+```
+
+`whitelist add <uuid>` accepts the same UUID once Floodgate has linked the
+identity. Convert the decimal XUID to hex carefully (a calculator or a lookup
+site that shows the XUID is fine); do not guess the digits.
+
 ## Removing a player
 
 ```text
 whitelist remove <name>
 fwhitelist remove <name>     # Bedrock
 ```
+
+## Verify enforcement
+
+Keep `white-list=true` and `enforce-whitelist=true`. The itzg image can rewrite
+`server.properties` from its environment on a fresh instance or a container
+recreate, silently turning the whitelist off. `automation/whitelist-check.sh` is a
+read-only check that reads the mounted `server.properties` and fails (exit `1`)
+when either whitelist property is not true, and exits `2` on bad input:
+
+```bash
+SERVER_DIR=/srv/minecraft/instances/<instance-data> bash automation/whitelist-check.sh
+ONLINE_MODE_REQUIRED=1 SERVER_DIR=/srv/minecraft/instances/<instance-data> \
+  bash automation/whitelist-check.sh    # also fail if online-mode is not true
+```
+
+`automation/daily-reset.sh` runs it against the reopened server and refuses to
+advance the seed if the whitelist is off. `automation/maintenance-report.sh`
+includes the same check when `SERVER_DIR` is set. The check only reads the file;
+it never adds or removes players.
 
 ## Manual approval is the default
 

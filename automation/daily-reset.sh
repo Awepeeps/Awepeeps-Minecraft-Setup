@@ -126,6 +126,8 @@ fi
 [[ "$MCSM_WEB_CONTAINER" =~ ^[A-Za-z0-9_.-]+$ ]] || die 'MCSM_WEB_CONTAINER is invalid'
 command -v timeout >/dev/null 2>&1 || die 'GNU timeout is required to bound RCON calls'
 [[ -r "$(dirname -- "$0")/mcsm-start.js" ]] || die 'mcsm-start.js must be installed beside this script'
+[[ -f "$(dirname -- "$0")/whitelist-check.sh" && ! -L "$(dirname -- "$0")/whitelist-check.sh" ]] \
+  || die 'whitelist-check.sh must be installed beside this script'
 [[ ! -L "$STATE_DIR" ]] || die 'STATE_DIR must not be a symlink'
 mkdir -p -- "$STATE_DIR"
 [[ ! -L "$STATE_DIR/lifecycle.lock" ]] || die 'lock file must not be a symlink'
@@ -295,6 +297,13 @@ for dimension in minecraft:overworld minecraft:the_nether minecraft:the_end; do
   [[ "$result" =~ (^|[^0-9])50([^0-9]|$) ]] \
     || die "sleeping percentage in $dimension did not verify as 50; seed index was not advanced"
 done
+
+# The whitelist must survive a fresh world and a container recreate. The image
+# can rewrite server.properties from its environment at startup, so verify the
+# running server still enforces it before anything else is committed.
+log 'verifying whitelist enforcement on the running server'
+SERVER_DIR="$server_dir" bash "$(dirname -- "$0")/whitelist-check.sh" \
+  || die 'whitelist is not enforced on the running server; seed index was not advanced'
 
 # AwepeepsSpawnKit 1.2.x and later load the chunks they need asynchronously with
 # plugin chunk tickets and release them when the build finishes, so the reset must

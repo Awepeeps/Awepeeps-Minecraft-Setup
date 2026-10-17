@@ -10,6 +10,9 @@ cat > "$tmp/server/server.properties" <<'EOF'
 level-name=world
 level-seed=old
 motd=test
+white-list=true
+enforce-whitelist=true
+online-mode=true
 EOF
 printf '11\n22\n' > "$tmp/seeds"
 cat > "$tmp/bin/date" <<'EOF'
@@ -148,6 +151,7 @@ check test_kit_dir_reverified_before_wipe bash -c 'mkdir -p "$SERVER_DIR/plugins
 mkdir -p "$tmp/reset-bin"
 cp "$script" "$tmp/reset-bin/daily-reset.sh"
 cp "$script_dir/mcsm-start.js" "$tmp/reset-bin/mcsm-start.js"
+cp "$script_dir/whitelist-check.sh" "$tmp/reset-bin/whitelist-check.sh"
 cat > "$tmp/reset-bin/backup.sh" <<'EOF'
 #!/usr/bin/env bash
 [[ "${BACKUP_LOCK_HELD:-}" == 1 ]] || exit 9
@@ -182,5 +186,8 @@ check test_kit_state_is_backed_up_before_reset bash -c 'mkdir -p "$SERVER_DIR/pl
 # gate, and a failure must never block seed rotation.
 check bluemap_spawn_view_runs_and_advances bash -c 'mkdir -p "$SERVER_DIR/plugins/BlueMap"; printf 0 > "$STATE_DIR/seed-index"; run && [[ $(cat "$SERVER_DIR/spawn-view-called") == ok ]] && grep -qx 1 "$STATE_DIR/seed-index"; rc=$?; rm -rf "$SERVER_DIR/plugins" "$SERVER_DIR/spawn-view-called"; exit "$rc"'
 check bluemap_spawn_view_failure_warns_only bash -c 'mkdir -p "$SERVER_DIR/plugins/BlueMap"; printf 0 > "$STATE_DIR/seed-index"; run SPAWN_VIEW_FAIL=1 && [[ ! -e "$SERVER_DIR/spawn-view-called" ]] && grep -qx 1 "$STATE_DIR/seed-index"; rc=$?; rm -rf "$SERVER_DIR/plugins" "$SERVER_DIR/spawn-view-called"; exit "$rc"'
+# The whitelist check runs on the running server and fails closed: a server that
+# no longer enforces the whitelist must not advance the seed.
+check whitelist_failure_blocks_seed_advance bash -c 'printf 0 > "$STATE_DIR/seed-index"; cp "$SERVER_DIR/server.properties" "$tmp/props.bak"; sed -i "s/^white-list=true/white-list=false/" "$SERVER_DIR/server.properties"; ! run && grep -qx 0 "$STATE_DIR/seed-index"; rc=$?; cp "$tmp/props.bak" "$SERVER_DIR/server.properties"; exit "$rc"'
 if (( failures )); then printf '%d test(s) failed\n' "$failures" >&2; exit 1; fi
 printf 'all daily-reset mock tests passed\n'

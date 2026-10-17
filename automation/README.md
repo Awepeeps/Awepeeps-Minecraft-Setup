@@ -22,6 +22,7 @@ without Docker, network, or a live server.
 | `build-spawn-kit.sh` | Builds Awepeeps-SpawnKit (test-only) from its pinned commit and verifies the jar. |
 | `daily-reset.sh` | Guarded, self-expiring disposable-test world reset under the lifecycle lock. See `../docs/world-reset.md`. |
 | `bluemap-spawn-view.py` | Points each BlueMap map at the fresh world spawn and enforces the inhabited-time policy after a reset (`--check` reports, `--apply` edits atomically). Reads `world/level.dat` (gzip NBT) and fails closed. See `../docs/bluemap.md`. |
+| `whitelist-check.sh` | Read-only verify that the mounted `server.properties` still enforces `white-list`/`enforce-whitelist`. Fails closed (exit 1 when off, 2 on bad input). See `../docs/whitelist.md`. |
 | `mcsm-start.js` | Reopens a saved MCSManager instance through the panel's own lifecycle API (used by the reset). Never prints config values. |
 | `recovery-gate.sh` | Toggles the marker that stops an automatic boot-recovery job from reopening an intentionally stopped server. |
 | `maintenance-report.sh` / `maintenance-status.py` | Local, read-only health summary: backup privacy/coverage and systemd unit results. Never sends anything. |
@@ -46,7 +47,11 @@ bash automation/run-tests.sh
   rejection and unsafe names.
 - `test-daily-reset.sh` — reset safety gates: expiry, pre-wipe backup, lock,
   symlink/hardlink refusal, seed rotation, Spawn Kit preloading, BlueMap purge
-  acknowledgment, the warn-only spawn-view step, and MCSManager reopen.
+  acknowledgment, the warn-only spawn-view step, whitelist enforcement, and
+  MCSManager reopen.
+- `test-whitelist-check.sh` — whitelist enforcement: true/false/missing/empty,
+  case and CRLF handling, last-occurrence wins, `ONLINE_MODE_REQUIRED`, and
+  symlink/protected-path refusal.
 - `test-maintenance-status.py`, `test-snapshot-policy.py`, `test-season-end.py`.
 - `test-bluemap-spawn-view.py` — BlueMap spawn-view NBT layouts, line edits, and
   fail-closed apply.

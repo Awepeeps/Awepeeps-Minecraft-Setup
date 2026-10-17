@@ -23,8 +23,9 @@ change anything if a check fails.
   container's `/data` bind source before doing anything.
 - **Fail closed.** A symlinked world/plugins/plugin-state path, a missing or
   malformed `server.properties` seed key, a failed RCON stop, a non-zero container
-  exit, a failed gamerule verify, or an unacknowledged BlueMap purge stops the run
-  before the seed index advances.
+  exit, a failed gamerule verify, a running server that no longer enforces the
+  whitelist, or an unacknowledged BlueMap purge stops the run before the seed
+  index advances.
 - **Deferred state removal.** Plugin state files are removed only after every
   world directory was deleted successfully, so a failed wipe cannot leave a
   surviving world that no longer re-issues state.
@@ -57,8 +58,10 @@ MCSM_INSTANCE_UUID=<instance-id> \
 
 The script uses the image's internal `rcon-cli`; no RCON password is placed on
 the command line or in configuration. After the wipe it asks MCSManager to reopen
-the saved instance (via `automation/mcsm-start.js`), waits for RCON readiness, and
-applies `minecraft:players_sleeping_percentage 50` in all three dimensions.
+the saved instance (via `automation/mcsm-start.js`), waits for RCON readiness,
+applies `minecraft:players_sleeping_percentage 50` in all three dimensions, and
+verifies the running server still enforces the whitelist
+(`automation/whitelist-check.sh`) before it commits the seed rotation.
 
 ## BlueMap purge gate
 
