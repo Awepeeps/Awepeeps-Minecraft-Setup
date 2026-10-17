@@ -80,9 +80,10 @@ render failure, record the failure and leave the map frozen for the next batch.
 Use a host-side systemd user timer, with `Persistent=false`, to invoke the native
 commands through the server's existing authenticated console or RCON path. For a
 disposable test world, schedule hourly at minute 10 (`OnCalendar=*-*-* *:10:00`).
-For a live world, schedule once daily before that host's morning backup. Keep the
-render service and backup service independent: a failed or slow render must not
-prevent the primary backup from running. Do not put RCON credentials in unit
+For a live world, schedule once daily before that host's morning backup. Keep
+backup success independent of rendering: a sequential pre-backup wrapper can
+wait for a bounded batch, warn on failure and still back up primary data. Do not
+let a failed render skip that backup. Do not put RCON credentials in unit
 files or command lines.
 
 The live viewer's terrain is usually from the latest completed batch, so its age
