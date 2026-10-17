@@ -25,6 +25,7 @@ verification.
 | [EssentialsX Core](https://github.com/EssentialsX/Essentials) | Selected for nicknames, moderation commands, and core utilities. The public manifest pin remains unfilled; see [`docs/plugins.md`](../docs/plugins.md) for status and validation scope, and [`nicknames-and-permissions.md`](../docs/nicknames-and-permissions.md) for permission policy. | No |
 | [FreedomChat](https://github.com/ocelotpotpie/FreedomChat) | Optional chat compatibility layer. If used, settings are release-specific; outgoing signed chat remains reportable. It is not a chat-report protection feature. | Optional; public pin unfilled |
 | [BlueMap](https://bluemap.bluecolored.de/) | Web map. | No |
+| [BlueMap Offline Player Markers](https://github.com/TechnicJelle/BlueMapOfflinePlayerMarkers) | Publishes a separate toggleable marker set at players' last saved logout positions. The 3.x line supports newer Minecraft player-data layouts; v3.3 skips zero UUID data. Verify it on the target Paper/BlueMap versions before deployment. | No |
 | [Geyser](https://geysermc.org/) | Translates Bedrock clients to Java. Check for a stable release that supports your Paper version. | No |
 | [Floodgate](https://geysermc.org/) | Lets Bedrock players in without a Java account. | No |
 

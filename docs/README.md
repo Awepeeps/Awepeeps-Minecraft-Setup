@@ -15,8 +15,8 @@ for vanilla properties, gamerules, Paper, plugin, and container configuration.
   minimal LuckPerms grants, and the limits on overhead nickname display.
 - [Bedrock access](bedrock.md): Geyser/Floodgate, the RakNet and NetherNet
   (Bedrock 26.40+) ports, and the WSL2 NAT limitation with its two fixes.
-- [BlueMap](bluemap.md): viewer settings, explored-terrain policy, purge
-  behavior, and marker policy.
+- [BlueMap](bluemap.md): viewer settings, explored-terrain policy, scheduled
+  terrain batches, purge behavior, and live/offline marker layers.
 - [Backups and restore](backups.md): live-safe backups, verification, retention,
   scheduling, restore, and the local status report.
 - [Guarded test-world reset](world-reset.md): the self-expiring disposable-world

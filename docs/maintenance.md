@@ -107,18 +107,28 @@ for `min-inhabited-time` and rerender behavior.
 
 ## Shared marker policy
 
-Allow administrator-managed spawn markers and the shared waypoint layer
-published by Awepeeps-BlueMap-Compass. Players sneak-right-click a permitted
-lodestone or banner with a compass to create or remove a waypoint. Keep marker
-targets administrator-controlled; in-game item requirements do not hide the
-shared map layer. Vanilla lodestone compass binding alone does not register a
-waypoint.
+Allow administrator-managed spawn markers, the shared waypoint layer published
+by Awepeeps-BlueMap-Compass, and the separate display-only BlueMap Offline
+Player Markers set. Players sneak-right-click a permitted lodestone or banner
+with a compass to create or remove a waypoint. Keep waypoint targets
+administrator-controlled; in-game item requirements do not hide the shared map
+layer. Vanilla lodestone compass binding alone does not register a waypoint.
 
-BlueMap's current built-in commands do not provide persistent marker creation.
-Keep server configuration administrator-controlled and omit marker-command addons.
-If an addon is introduced, review its documented create/edit/delete permissions
-before enabling it for players. Audit existing static marker sets and legacy POIs:
-older imported records may predate lodestone-only creation. Live player positions
-are a separate display feature from these persistent POIs. See
+Offline markers show names and saved logout positions. The upstream plugin's
+default retention is unlimited; review its `ExpireTimeInHours` setting and its
+spectator/banned-player filters before enabling it. This feature intentionally
+publishes player identity and location on the map. Keep world player data and
+map output private, and never commit player caches or runtime data. World
+player-data files are the location source of truth; the addon's name cache is
+derived. Terrain render scheduling does not delay online positions, Compass
+waypoints, or offline markers; see the [BlueMap guide](bluemap.md).
+
+BlueMap's built-in commands do not provide persistent marker creation. Offline
+Player Markers is display-only and adds no edit commands. Keep server
+configuration administrator-controlled. If a marker-command addon is introduced,
+review its documented create/edit/delete permissions before enabling it for
+players. Audit existing static marker sets and legacy POIs: older imported
+records may predate lodestone-only creation. Live player positions are a separate
+display feature from these persistent POIs. See
 [BlueMap commands](https://bluemap.bluecolored.de/wiki/getting-started/Commands.html)
 and [marker configuration](https://bluemap.bluecolored.de/wiki/customization/Markers.html).

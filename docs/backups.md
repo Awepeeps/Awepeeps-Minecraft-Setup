@@ -57,6 +57,18 @@ private key: keep it in the backup (losing it re-prompts every Bedrock player)
 but never in Git. Keep `.env`'s `PLUGIN_DATA_DIRS` and `PLUGIN_DATA_PATHS` aligned
 with `backup-verify.sh`; the verifier refuses unexpected plugin files.
 
+The default allowlist does not include BlueMap Offline Player Markers. If you
+change its settings from the published template defaults, add only
+`plugins/BlueMapOfflinePlayerMarkers/config.yml` to `PLUGIN_DATA_PATHS` for both
+backup and verification. Its `cachedPlayerNames.json` is derived data and need
+not be backed up; Minecraft world player-data files remain the source of truth
+for saved locations. Player identities and positions are private. BlueMap's
+freeze state is in `<BLUEMAP_DATA>/pluginState.json`, with the data directory
+selected by `core.data`; the current stock plugin-path allowlist does not capture
+it. A deployment using frozen terrain batches must explicitly preserve that
+single state file in its private backup and verifier, or re-freeze all maps
+before exposing the viewer after restore.
+
 ## Scheduling
 
 Use one scheduler. A systemd **user** timer is recommended, with an explicit

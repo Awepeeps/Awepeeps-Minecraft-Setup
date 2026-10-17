@@ -22,6 +22,7 @@ that becomes `/data` inside the container).
 | `plugins/AwepeepsSpawnKit/config.yml` | `<instance-data>/plugins/AwepeepsSpawnKit/config.yml` |
 | `plugins/AwepeepsSpawnKit/preseason.example.yml` | test-only; see the file header |
 | `plugins/AwepeepsBlueMapCompass/config.yml` | `<instance-data>/plugins/AwepeepsBlueMapCompass/config.yml` |
+| `plugins/BlueMapOfflinePlayerMarkers/config.yml.template` | `<instance-data>/plugins/BlueMapOfflinePlayerMarkers/config.yml` |
 | `plugins/BlueMap/core.conf.template` | `<instance-data>/plugins/BlueMap/core.conf` |
 | `plugins/BlueMap/webapp.conf.template` | `<instance-data>/plugins/BlueMap/webapp.conf` |
 | `plugins/BlueMap/maps/example.conf.template` | `<instance-data>/plugins/BlueMap/maps/<map-id>.conf` |
