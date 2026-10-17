@@ -74,6 +74,11 @@ because they are entangled with one host's panel internals and network:
   `../docs/testing.md`; the implementation is private.
 - **The Windows UDP relay** for Bedrock on WSL2. The limitation and the two fixes
   are described in `../docs/bedrock.md`; the forwarder itself is host-specific.
+- **The Windows firewall installer** (`install-minecraft-firewall.ps1`; six named
+  rules plus `-Uninstall`). This template ships no firewall script on purpose: the
+  inbound rules are documented generically for `ufw` (Linux host) and as manual
+  `New-NetFirewallRule` commands (Windows/WSL2 host) in `../docs/bedrock.md`.
+  Revisit only if a specific installer becomes necessary.
 
 If you need one of these, port it from the private deployment the same way these
 scripts were: replace every path, hostname, identifier and name with an

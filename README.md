@@ -33,10 +33,12 @@ Never merge the private repository's history into this one.
 - Bedrock cross-play via Geyser + Floodgate.
 - ViaVersion + ViaBackwards, LuckPerms, EssentialsX Core, BlueMap,
   Awepeeps-ChestCleaner, Awepeeps-BlueMap-Compass, and (test-only)
-  Awepeeps-SpawnKit are the selected portable stack. The template manifests
-  intentionally keep exact URLs and hashes as TODOs; they are not a ready-to-run
-  copy of a private staging server's pins. FreedomChat is optional and its
-  release-specific chat settings must be reviewed separately.
+  Awepeeps-SpawnKit are the selected portable stack. EssentialsX Core is
+  selected, but its manifest entry stays an inactive placeholder until you
+  validate a release for your Paper build and measure its jar. The template
+  manifests intentionally keep exact URLs and hashes as TODOs; they are not a
+  ready-to-run copy of a private staging server's pins. FreedomChat is optional
+  and its release-specific chat settings must be reviewed separately.
 - Plugins pinned by exact version or source commit **plus the SHA-256 of the jar**,
   and verified before install.
 - Verified backups, a guarded disposable-test world reset, and a maintenance report.
@@ -78,8 +80,9 @@ bash automation/run-tests.sh
 ```
 
 This runs `bash -n`, the mock suites (backup, install-plugins, daily-reset,
-maintenance, snapshot, season-end) without Docker or network, and is the same set
-CI runs alongside `shellcheck`, YAML validation, and a secret scan.
+whitelist-check, bluemap-spawn-view, maintenance, snapshot, season-end) without
+Docker or network, and is the same set CI runs alongside `shellcheck`, YAML
+validation, and a secret scan.
 
 ## Contribution workflow
 

@@ -16,8 +16,9 @@ whitelist-only Paper + Bedrock server. Start at [README.md](README.md) and
   world-reset, updating-plugins, testing, maintenance, local-recovery.
 - `config/` — sanitized templates and `config/sources/*.env.example` source pins.
 - `plugins/` — `plugins.list` / `test-plugins.list` pin format and release model.
-- `automation/` — backup/verify/reset/report/build/install scripts and their
-  mock tests.
+- `automation/` — backup/verify/reset/report/build/install scripts (including
+  the read-only `whitelist-check.sh` enforcement check and the BlueMap
+  `bluemap-spawn-view.py` helper) and their mock tests.
 - `seasons/` — sanitized, per-server/season policy records.
 - `compose.yaml`, `.env.example` — MCSManager panel and documented variables.
 
