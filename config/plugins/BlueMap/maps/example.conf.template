@@ -5,12 +5,16 @@
 # BlueMap writes a file per map on first boot. Stop the server, merge the value
 # below into each generated map file, and start again.
 #
-# min-inhabited-time: 30 means a chunk must accumulate about 1.5 seconds (30
-# ticks at 20 ticks/second) of nearby player time before BlueMap renders it.
-# It is a map-render threshold, not an exact record of what a client saw, and it
-# requires a map re-render after any change. Leave any inhabited-time radius at
-# its default. Minecraft view-distance is independent.
-min-inhabited-time: 30
+# min-inhabited-time is a chunk's accumulated nearby-player time, in ticks,
+# before BlueMap renders it. 30 ticks (~1.5 s) renders almost everything a player
+# walked past; 1200 ticks (60 s) is a deliberate explored-terrain filter, so
+# chunks a player only rushed through are left undrawn. The reference instance
+# uses 1200: choose the value deliberately, and remember it needs a map
+# re-render after any change. It is a map-render threshold, not an exact record
+# of what a client saw, and it counts every chunk within a player's simulation
+# distance. Leave any inhabited-time radius at its default. Minecraft
+# view-distance is independent. See docs/bluemap.md.
+min-inhabited-time: 1200
 # TODO: keep the remaining generated map keys (name, world, dimension, storage,
 # and any marker sets) from your BlueMap version. Static marker configuration
 # stays administrator-managed; do not add marker-command addons to the plugin

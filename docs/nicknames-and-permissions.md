@@ -78,6 +78,46 @@ create a separate vetted group and grant only `essentials.kick`,
 administration in console/operator access. Do not op friends as a substitute for
 narrow grants.
 
+## AFK and sleeping
+
+These are recommended example values, not mandates. They keep an idle player from
+holding a slot and keep night-skip arithmetic predictable. Set them in
+EssentialsX's generated `config.yml`; the five keys are read when EssentialsX
+loads, so a change takes effect on a restart.
+
+| Key | Example | Effect |
+|---|---|---|
+| `auto-afk` | `600` | A player is marked AFK after 10 minutes idle. |
+| `auto-afk-timeout` | `1200` | A player is kicked after 20 minutes idle (10 minutes after the AFK mark). |
+| `afk-timeout-commands` | *empty* | With no command list, reaching the timeout kicks instead of running a command. |
+| `sleep-ignores-afk-players` | `true` | An AFK player does not block a night skip. |
+| `broadcast-afk-message` | `true` | The server is told when a player's AFK state changes. |
+
+Auto-AFK is gated by the `essentials.afk.auto` permission, so a `default`-group
+grant is what actually reaches every player. The idle kick and the night-skip
+exemption are gated by the **absence** of `essentials.afk.kickexempt` and
+`essentials.sleepingignored`. EssentialsX declares neither of those two nodes with
+a default, so Bukkit grants them to operators — an operator would otherwise never
+be kicked for idling and would never count toward the sleeping threshold. Set all
+three on the `default` group, including the two explicit `false` values, so the
+operator is covered too:
+
+```text
+/lp group default permission set essentials.afk.auto true
+/lp group default permission set essentials.afk.kickexempt false
+/lp group default permission set essentials.sleepingignored false
+```
+
+An explicit LuckPerms node overrides the Bukkit operator default. None of the
+three is an EssentialsX command, so the operator-only command policy above is
+unchanged.
+
+Sleeping needs `players_sleeping_percentage` of the relevant players asleep, and
+the count rounds **up** (`ceil`): 1 of 1, 1 of 2 and 2 of 3 all skip. The guarded
+reset sets `minecraft:players_sleeping_percentage 50` in all three dimensions. With
+AFK players ignored and the operator no longer sleeping-ignored, an AFK or awake
+operator does not satisfy the skip on their own.
+
 ## FreedomChat
 
 FreedomChat is optional. The portable config template sets `rewrite-chat: false`

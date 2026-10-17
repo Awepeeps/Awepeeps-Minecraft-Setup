@@ -10,6 +10,9 @@ cat > "$tmp/server/server.properties" <<'EOF'
 level-name=world
 level-seed=old
 motd=test
+white-list=true
+enforce-whitelist=true
+online-mode=true
 EOF
 printf '11\n22\n' > "$tmp/seeds"
 cat > "$tmp/bin/date" <<'EOF'
@@ -148,6 +151,7 @@ check test_kit_dir_reverified_before_wipe bash -c 'mkdir -p "$SERVER_DIR/plugins
 mkdir -p "$tmp/reset-bin"
 cp "$script" "$tmp/reset-bin/daily-reset.sh"
 cp "$script_dir/mcsm-start.js" "$tmp/reset-bin/mcsm-start.js"
+cp "$script_dir/whitelist-check.sh" "$tmp/reset-bin/whitelist-check.sh"
 cat > "$tmp/reset-bin/backup.sh" <<'EOF'
 #!/usr/bin/env bash
 [[ "${BACKUP_LOCK_HELD:-}" == 1 ]] || exit 9
@@ -159,9 +163,31 @@ printf 'backup\n' >> "$BACKUP_CALLS"
 [[ "${BACKUP_FAIL:-0}" == 0 ]]
 EOF
 chmod +x "$tmp/reset-bin/backup.sh"
+# Mock the BlueMap spawn-view helper so the reset wiring can be exercised without
+# the real NBT reader. On failure it exits non-zero; the reset must still advance.
+cat > "$tmp/reset-bin/bluemap-spawn-view.py" <<'EOF'
+import os, sys
+argv = sys.argv[1:]
+server_dir = None
+for index, arg in enumerate(argv):
+    if arg == "--server-dir":
+        server_dir = argv[index + 1]
+if os.environ.get("SPAWN_VIEW_FAIL") == "1":
+    sys.stderr.write("mock spawn-view failure\n")
+    raise SystemExit(1)
+with open(os.path.join(server_dir, "spawn-view-called"), "w", encoding="utf-8") as handle:
+    handle.write("ok\n")
+EOF
 script="$tmp/reset-bin/daily-reset.sh"; export script BACKUP_CALLS="$tmp/backup-calls"
 check prewipe_backup_failure_aborts_before_stop bash -c 'before=$(grep "^level-seed=" "$SERVER_DIR/server.properties"); : > "$CALLS"; ! run PREWIPE_BACKUP=1 BACKUP_FAIL=1 && grep -qx backup "$BACKUP_CALLS" && ! grep -q "wait minecraft\|rcon-cli stop" "$CALLS" && grep -qx "$before" "$SERVER_DIR/server.properties"'
 check prewipe_backup_default_runs_under_lock bash -c 'rm -f "$BACKUP_CALLS"; run_default_prebackup && grep -qx backup "$BACKUP_CALLS" && grep -q "rcon-cli stop" "$CALLS"'
 check test_kit_state_is_backed_up_before_reset bash -c 'mkdir -p "$SERVER_DIR/plugins/AwepeepsSpawnKit"; printf tombstone > "$SERVER_DIR/plugins/AwepeepsSpawnKit/issued-kits.yml"; run PREWIPE_BACKUP=1 BACKUP_REQUIRE_TEST_KIT=1 BACKUP_TEST_KIT_SNAPSHOT="$tmp/test-kit-backup" && [[ $(cat "$tmp/test-kit-backup") == tombstone ]] && [[ ! -e "$SERVER_DIR/plugins/AwepeepsSpawnKit/issued-kits.yml" ]]; rm -rf "$SERVER_DIR/plugins"'
+# The BlueMap spawn-view step is cosmetic and warn-only: it runs after the purge
+# gate, and a failure must never block seed rotation.
+check bluemap_spawn_view_runs_and_advances bash -c 'mkdir -p "$SERVER_DIR/plugins/BlueMap"; printf 0 > "$STATE_DIR/seed-index"; run && [[ $(cat "$SERVER_DIR/spawn-view-called") == ok ]] && grep -qx 1 "$STATE_DIR/seed-index"; rc=$?; rm -rf "$SERVER_DIR/plugins" "$SERVER_DIR/spawn-view-called"; exit "$rc"'
+check bluemap_spawn_view_failure_warns_only bash -c 'mkdir -p "$SERVER_DIR/plugins/BlueMap"; printf 0 > "$STATE_DIR/seed-index"; run SPAWN_VIEW_FAIL=1 && [[ ! -e "$SERVER_DIR/spawn-view-called" ]] && grep -qx 1 "$STATE_DIR/seed-index"; rc=$?; rm -rf "$SERVER_DIR/plugins" "$SERVER_DIR/spawn-view-called"; exit "$rc"'
+# The whitelist check runs on the running server and fails closed: a server that
+# no longer enforces the whitelist must not advance the seed.
+check whitelist_failure_blocks_seed_advance bash -c 'printf 0 > "$STATE_DIR/seed-index"; cp "$SERVER_DIR/server.properties" "$tmp/props.bak"; sed -i "s/^white-list=true/white-list=false/" "$SERVER_DIR/server.properties"; ! run && grep -qx 0 "$STATE_DIR/seed-index"; rc=$?; cp "$tmp/props.bak" "$SERVER_DIR/server.properties"; exit "$rc"'
 if (( failures )); then printf '%d test(s) failed\n' "$failures" >&2; exit 1; fi
 printf 'all daily-reset mock tests passed\n'

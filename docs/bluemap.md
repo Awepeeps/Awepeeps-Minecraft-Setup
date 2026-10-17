@@ -22,17 +22,65 @@ behind a reverse proxy with TLS) until you have decided to expose it.
 
 ## Explored-terrain policy
 
-Set `min-inhabited-time: 30` in each map configuration
+Set `min-inhabited-time: 1200` in each map configuration
 (`plugins/BlueMap/maps/<map-id>.conf`, for example `world`,
-`world_the_nether`, `world_the_end`). At 20 game ticks per second, this is an
-approximate threshold of 1.5 seconds of cumulative chunk inhabited time. Leave
-any inhabited-time radius at its default zero.
+`world_the_nether`, `world_the_end`). A chunk accumulates inhabited time while a
+player is nearby; at 20 game ticks per second, `1200` is about 60 seconds of
+cumulative nearby time before BlueMap renders that chunk. Leave any
+inhabited-time radius at its default zero.
+
+Two values matter as a deliberate choice:
+
+- `30` ticks (~1.5 seconds) renders almost everything a player walked past, so it
+  barely filters the map.
+- `1200` ticks (60 seconds) is an **explored-terrain filter**: chunks a player
+  only rushed through are left undrawn, while places they spent time are drawn.
+  The reference instance uses `1200`; the template header states the same value
+  and the tradeoff.
+
+Inhabited time counts **every chunk within a player's simulation distance**, not
+only the chunks a client actually received. At `simulation-distance=8`
+(8 chunks ≈ 128 blocks on each axis) a player still lights up roughly a
+128-block radius, so the drawn radius around where people spent time cannot
+shrink below that without lowering `simulation-distance` further. Minecraft's
+`view-distance=10` is independent: it still controls how far a client receives
+chunks and still matches the 160-block web-viewer draw cap below.
 
 This is a **map-render threshold**, not an exact record of what a client saw:
 nearby time can qualify a chunk, while client visibility and render timing are
-separate. Changing it requires a map re-render. Minecraft's `view-distance` is
-independent. See the
+separate. Changing it requires a map re-render. See the
 [official map configuration reference](https://bluemap.bluecolored.de/wiki/configs/Maps.html).
+
+## Spawn view after a world reset
+
+Each generated map opens the viewer at its `start-pos`, which defaults to
+`{ x: 0, z: 0 }` — usually unrendered void after a reset regenerates the world
+with a new seed. `automation/bluemap-spawn-view.py` points each map at the fresh
+overworld spawn and enforces the inhabited-time policy:
+
+```bash
+python3 automation/bluemap-spawn-view.py --check --server-dir /srv/minecraft/instances/<instance-data>
+python3 automation/bluemap-spawn-view.py --apply --server-dir /srv/minecraft/instances/<instance-data>
+```
+
+It reads the overworld spawn from `world/level.dat` (gzip NBT; both the 1.21.2+
+`Data.spawn.pos` int array and the legacy `Data.SpawnX`/`Data.SpawnZ` fields are
+supported) and rewrites only the single `start-pos` line of `maps/world.conf` to
+the overworld x/z and of `maps/world_the_nether.conf` to the floor-divided
+`x/8`, `z/8` (the Nether coordinate mapping). The End map stays at
+`{ x: 0, z: 0 }`. The same run enforces `min-inhabited-time` (default `1200`,
+override with `--min-inhabited-time`) on all three maps.
+
+`--check` reports the detected spawn and the pending edits without writing;
+`--apply` rewrites each config atomically (temp file plus rename, mode and owner
+preserved) and prints the `bluemap reload` reminder. It fails closed: an
+unreadable or unrecognized `level.dat` leaves `start-pos` unchanged, and a
+missing or ambiguous config line is never edited. BlueMap generates `maps/*.conf`
+itself, so these values are not templated in this repo.
+
+The guarded reset calls this automatically after every configured map
+acknowledges its purge (so BlueMap is loaded) and then runs `bluemap reload`; a
+failure warns only and never blocks the reset. See [world-reset.md](world-reset.md).
 
 ## Purge and re-render after a world reset
 

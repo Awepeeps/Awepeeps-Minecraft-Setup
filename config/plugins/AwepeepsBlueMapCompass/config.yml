@@ -9,3 +9,12 @@ marker-targets:
   - LODESTONE
   - BANNER
 max-waypoint-distance: 50
+# Per-player debounce, in milliseconds, applied to every compass action:
+# creating, toggling, or removing a waypoint or marker, opening the waypoint
+# menu, and toggling tracking inside that menu. A repeat of the same action
+# inside this window is ignored, which absorbs the duplicate interaction events
+# Bedrock/Geyser clients send for a single press. A different action (for
+# example opening the menu right after placing a marker) is tracked separately
+# and still works. 0 disables the debounce; values outside 0-5000 fall back to
+# the default 750. See docs/plugins.md.
+interaction-cooldown-ms: 750

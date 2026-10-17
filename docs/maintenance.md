@@ -93,12 +93,15 @@ particular backup or deployment has passed verification.
 ## BlueMap explored-area behavior
 
 BlueMap's `min-inhabited-time` filters rendered chunks using cumulative player
-time near a chunk. A value of **30 ticks** is approximately **1.5 seconds** at
-20 ticks per second. It is a map-render threshold, not an exact record of what a
-client has seen: nearby time can qualify a chunk, while client visibility and
-render timing are separate. Adjusting this setting requires a map rerender.
-Purging and rerendering BlueMap affects map tiles only; it does not change
-Minecraft's world generation, chunk state, or server view distance. See the
+time near a chunk. A value of **1200 ticks** is approximately **60 seconds** at
+20 ticks per second: it is an explored-terrain filter, so chunks a player only
+passed through are not drawn (`30` ticks, ~1.5 seconds, barely filters at all).
+It counts every chunk within a player's simulation distance, and it is a
+map-render threshold, not an exact record of what a client has seen: nearby time
+can qualify a chunk, while client visibility and render timing are separate.
+Adjusting this setting requires a map rerender. Purging and rerendering BlueMap
+affects map tiles only; it does not change Minecraft's world generation, chunk
+state, or server view distance. See the
 [official BlueMap map configuration reference](https://bluemap.bluecolored.de/wiki/configs/Maps.html)
 for `min-inhabited-time` and rerender behavior.
 

@@ -23,7 +23,9 @@ values and secrets, and must reproduce on a clean host.
 4. Where a value legitimately depends on the reader's Paper/plugin version, mark
    it `TODO` instead of guessing.
 5. Keep the module docs in sync: `README.md`, `docs/README.md`,
-   `config/README.md`, `plugins/README.md`, `automation/README.md`.
+   `config/README.md`, `plugins/README.md`, `automation/README.md`. A new
+   automation script gets a row in `automation/README.md`, a `run` entry in
+   `automation/run-tests.sh`, and a mock test beside it.
 
 ## Validate before pushing
 

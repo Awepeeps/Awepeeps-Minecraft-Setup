@@ -23,8 +23,9 @@ change anything if a check fails.
   container's `/data` bind source before doing anything.
 - **Fail closed.** A symlinked world/plugins/plugin-state path, a missing or
   malformed `server.properties` seed key, a failed RCON stop, a non-zero container
-  exit, a failed gamerule verify, or an unacknowledged BlueMap purge stops the run
-  before the seed index advances.
+  exit, a failed gamerule verify, a running server that no longer enforces the
+  whitelist, or an unacknowledged BlueMap purge stops the run before the seed
+  index advances.
 - **Deferred state removal.** Plugin state files are removed only after every
   world directory was deleted successfully, so a failed wipe cannot leave a
   surviving world that no longer re-issues state.
@@ -57,8 +58,10 @@ MCSM_INSTANCE_UUID=<instance-id> \
 
 The script uses the image's internal `rcon-cli`; no RCON password is placed on
 the command line or in configuration. After the wipe it asks MCSManager to reopen
-the saved instance (via `automation/mcsm-start.js`), waits for RCON readiness, and
-applies `minecraft:players_sleeping_percentage 50` in all three dimensions.
+the saved instance (via `automation/mcsm-start.js`), waits for RCON readiness,
+applies `minecraft:players_sleeping_percentage 50` in all three dimensions, and
+verifies the running server still enforces the whitelist
+(`automation/whitelist-check.sh`) before it commits the seed rotation.
 
 ## BlueMap purge gate
 
@@ -67,6 +70,13 @@ in `BLUEMAP_MAPS` and requires BlueMap's acknowledgment before the seed index is
 advanced. If BlueMap is still loading it retries within `BLUEMAP_PURGE_TIMEOUT`.
 An unacknowledged purge stops the run. See [bluemap.md](bluemap.md) for why an
 idle/updated status is not proof the old tiles are gone.
+
+After every configured map acknowledges its purge (so BlueMap is loaded), the
+reset re-points each map at the fresh world spawn and enforces the
+inhabited-time policy with `automation/bluemap-spawn-view.py --apply`, then runs
+`bluemap reload` so the settings apply without a restart. That step is cosmetic
+and **warn-only**: a failure logs a warning and never blocks the seed rotation.
+See [bluemap.md](bluemap.md) for what it reads and how it fails closed.
 
 ## Spawn Kit chunk loading (test servers only)
 

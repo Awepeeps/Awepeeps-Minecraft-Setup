@@ -108,6 +108,7 @@ Image and environment:
 | `ONLINE_MODE` | `TRUE` |
 | `ENABLE_RCON` | `TRUE` |
 | `RCON_PASSWORD` | a strong secret, set only in the instance env |
+| `SIMULATION_DISTANCE` | `8` (maps to `server.properties` `simulation-distance`; view distance stays `10`) |
 | `INIT_MEMORY` / `MAX_MEMORY` | e.g. `1G` / `3G` (see below) |
 | `MEMORY` | fallback that sets both heap bounds; keep e.g. `3G` |
 | Container memory limit | e.g. 4096 MB (4 GiB) |
@@ -122,6 +123,16 @@ Heap: start at 1 GiB, grow to 3 GiB inside a 4 GiB container limit. The
 remainder is headroom for metaspace, thread stacks and native memory. For this
 image `MEMORY` sets both heap bounds; `INIT_MEMORY`/`MAX_MEMORY` set them
 independently.
+
+Simulation distance is `8` chunks while view distance stays `10`. Crops, mob
+spawning and redstone only tick within simulation distance (~128 blocks at 8),
+and BlueMap's inhabited-time filter counts every chunk within it, so the map
+draws roughly a 128-block radius around where players spent time rather than the
+~160-block view-distance radius. Lowering simulation distance reduces per-tick
+work; raising it widens both the ticking area and the explored-terrain map. The
+image maps `SIMULATION_DISTANCE` to the matching `server.properties` key on
+start, so an edit takes effect on a container recreate, not a plain stop/start.
+See [bluemap.md](bluemap.md).
 
 Ports to publish on the instance:
 
@@ -221,7 +232,9 @@ on first boot (do not replace the whole file):
 
 - BlueMap: `core.conf` (accept the download), `webapp.conf` (port `8100`, slider
   `0/160/160`, `max-zoom-distance: 512`), and each map file
-  (`min-inhabited-time: 30`). See [bluemap.md](bluemap.md).
+  (`min-inhabited-time: 1200`; see [bluemap.md](bluemap.md) for why 1200 rather
+  than a small value). The reset re-points each map's `start-pos` at the fresh
+  world spawn on its own (`automation/bluemap-spawn-view.py`).
 - ChestCleaner: `config.yml`, then run the one-time command checklist in
   `config/plugins/LuckPerms/README.md` and set the cleaning item in game with a
   brush and `/cleaningitem set`.
