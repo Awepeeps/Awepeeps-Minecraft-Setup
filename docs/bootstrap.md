@@ -240,7 +240,7 @@ on first boot (do not replace the whole file):
   brush and `/cleaningitem set`.
 - AwepeepsBlueMapCompass: `config.yml` (lodestone/banner targets).
 - Geyser + Floodgate: `config.yml` key settings. Once `transport` is `both` or
-  `nethernet`, `bedrock.signaling.builtin.advertise-addresses` **must** list every
+  `nethernet`, `bedrock.signaling.advertise-addresses` **must** list every
   address players reach NetherNet on (`host:19133`), never the container's
   internal address; an empty list only works when every player reaches the address
   Geyser bound. See [bedrock.md](bedrock.md).
@@ -271,7 +271,7 @@ on first boot (do not replace the whole file):
 - [ ] Bedrock join works (see [bedrock.md](bedrock.md)), and for Bedrock 26.40+
       `docker port <container>` shows `19132/tcp` and `19133/udp` with
       `curl http://<host>:19132/v1/join` returning the server-info JSON.
-- [ ] `bedrock.signaling.builtin.advertise-addresses` lists every address your
+- [ ] `bedrock.signaling.advertise-addresses` lists every address your
       players use (each as `host:19133`) and never the container's internal
       address; it may stay empty only if every player reaches Geyser's bound
       address.

@@ -120,7 +120,7 @@ serves **NetherNet** alongside it. The keys are in
   refuses to start.
 - `bedrock.signaling.mode: builtin` — Geyser serves NetherNet's HTTP signaling
   itself on **TCP 19132**; `GET /v1/join` returns the server-info JSON.
-- `bedrock.signaling.builtin.advertise-addresses` — **every** address players
+- `bedrock.signaling.advertise-addresses` — **every** address players
   reach NetherNet on, suffixed with the media port (for example a list such as
   `["<lan-ip>:19133", "<public-ip>:19133"]`). Never the container's internal
   address, and never just one candidate: a client handed an address it cannot
@@ -128,8 +128,9 @@ serves **NetherNet** alongside it. The keys are in
   bound to `0.0.0.0`, every local address) while this list is empty, so an empty
   list is only correct when every player reaches Geyser's own bound address.
 
-A Geyser build that supports `bedrock.signaling.builtin.advertise-addresses`
-(added upstream ~2026-10-06) is required. Do **not** pin a preview build just for
+This is the Geyser 2.12.1 path. Earlier NetherNet-capable builds used
+`bedrock.signaling.builtin.advertise-addresses`, and 2.12.1 moves the value on
+first start; a pinned override must follow it. Do **not** pin a preview build just for
 NetherNet; choose a supported release for your Paper and Bedrock versions (see
 [plugins.list](../plugins/plugins.list)).
 
