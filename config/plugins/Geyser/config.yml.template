@@ -9,8 +9,9 @@
 # TODO: confirm every key name and the full generated file against your pinned
 # Geyser version (https://geysermc.org/wiki/geyser/configuration/). The values
 # below are the ones that matter for a whitelist-only, Floodgate-backed server,
-# and the NetherNet keys require a NetherNet-capable Geyser build that supports
-# `bedrock.signaling.builtin.advertise-addresses` (added upstream ~2026-10-06).
+# and the NetherNet keys below use the Geyser 2.12.1 layout. Earlier
+# NetherNet-capable builds kept `advertise-addresses` under
+# `bedrock.signaling.builtin`; 2.12.1 moves it on first start.
 bedrock:
   # RakNet UDP port older Bedrock clients connect to. Forward this port.
   port: 19132
@@ -25,16 +26,15 @@ bedrock:
   signaling:
     # Geyser serves NetherNet's HTTP signaling itself on TCP 19132.
     mode: builtin
-    builtin:
-      # Ship this empty. Geyser only falls back to the address it bound (or,
-      # bound to 0.0.0.0, every local address) while the list is empty, so the
-      # default is wrong for any player who does not reach this host locally.
-      # Set it to every address players use, each suffixed with the media port,
-      # never the container's internal address, for example:
-      #   ["<lan-ip>:19133", "<public-ip>:19133"]
-      # A client handed a candidate it cannot reach fails to connect, so list
-      # every address (LAN, VPN/tailnet, public), not just one.
-      advertise-addresses: []
+    # Ship this empty. Geyser only falls back to the address it bound (or,
+    # bound to 0.0.0.0, every local address) while the list is empty, so the
+    # default is wrong for any player who does not reach this host locally.
+    # Set it to every address players use, each suffixed with the media port,
+    # never the container's internal address, for example:
+    #   ["<lan-ip>:19133", "<public-ip>:19133"]
+    # A client handed a candidate it cannot reach fails to connect, so list
+    # every address (LAN, VPN/tailnet, public), not just one.
+    advertise-addresses: []
 java:
   # The Java server Geyser translates to, inside the Docker network.
   # (Geyser 2.x calls this section `java:`; `remote:` is the pre-2.0 key name.)
